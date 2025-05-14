@@ -16,7 +16,7 @@ class AppTheme {
       brightness: Brightness.light,
       primary: primaryColor,
       secondary: secondaryColor,
-      background: backgroundColor,
+      surface: backgroundColor,
       error: errorColor,
     ),
     scaffoldBackgroundColor: backgroundColor,
@@ -49,8 +49,7 @@ class AppTheme {
       brightness: Brightness.dark,
       primary: primaryColor,
       secondary: Colors.white70,
-      background: secondaryColor,
-      surface: const Color(0xFF212121),
+      surface: secondaryColor, // Remplacer background par surface
       error: errorColor,
     ),
     scaffoldBackgroundColor: secondaryColor,

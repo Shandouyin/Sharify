@@ -74,8 +74,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         onPressed: () {
           // TODO: Navigate to create/edit top 3 screen
         },
-        child: const Icon(Icons.edit),
         tooltip: 'Edit My Top 3',
+        child: const Icon(Icons.edit),
       ),
     );
   }
