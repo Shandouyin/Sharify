@@ -4,78 +4,87 @@ import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/music_model.dart';
 import '../../data/models/user_model.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  final MockDataService _dataService = MockDataService();
-  
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-  
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-  
-  @override
   Widget build(BuildContext context) {
-    final UserModel currentUser = _dataService.currentUser;
-    final List<MusicModel> userTopMusic = _dataService.getTopMusicForUser(currentUser.id);
-    final List<UserModel> friends = _dataService.getFriendsForCurrentUser();
-    final List<MusicModel> communityTracks = _dataService.getCommunityTopTracks();
+    final MockDataService dataService = MockDataService();
+    final UserModel currentUser = dataService.currentUser;
+    final List<MusicModel> userTopMusic = dataService.getTopMusicForUser(currentUser.id);
+    final List<MusicModel> communityTracks = dataService.getCommunityTopTracks();
     
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sharify'),
         actions: [
           IconButton(
-            icon: CircleAvatar(
-              backgroundImage: NetworkImage(currentUser.profilePicture),
-              radius: 14,
-            ),
+            icon: const Icon(Icons.search),
             onPressed: () {
-              // TODO: Navigate to profile screen
+              // TODO: Implement search
             },
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'My Top 3'),
-            Tab(text: 'Friends'),
-            Tab(text: 'Community'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Welcome message
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Bonjour, ${currentUser.username}',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Découvrez les titres du moment',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+            
+            // My Top 3 Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'My Top 3',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // TODO: Navigate to edit top 3
+                    },
+                    child: const Text('Edit'),
+                  ),
+                ],
+              ),
+            ),
+            
+            _buildMyTopMusic(userTopMusic),
+            
+            const Divider(height: 32),
+            
+            // Community section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Community Favorites',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            
+            _buildCommunityPreview(communityTracks),
           ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          // My Top 3 Tab
-          _buildMyTopMusic(userTopMusic),
-          
-          // Friends Tab
-          _buildFriendsList(friends),
-          
-          // Community Tab
-          _buildCommunityTracks(communityTracks),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Navigate to create/edit top 3 screen
-        },
-        tooltip: 'Edit My Top 3',
-        child: const Icon(Icons.edit),
       ),
     );
   }
@@ -83,128 +92,78 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Widget _buildMyTopMusic(List<MusicModel> topMusic) {
     return topMusic.isEmpty
         ? _buildEmptyState('You haven\'t added your top tracks yet', 'Tap the edit button to add your favorites')
-        : ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: topMusic.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: MusicCard(
-                  music: topMusic[index],
-                  rank: index + 1,
-                  onTap: () {
-                    // TODO: Show details or play preview
-                  },
-                ),
-              );
-            },
+        : SizedBox(
+            height: 300,
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: topMusic.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: MusicCard(
+                    music: topMusic[index],
+                    rank: index + 1,
+                    onTap: () {
+                      // TODO: Show details or play preview
+                    },
+                  ),
+                );
+              },
+            ),
           );
   }
   
-  Widget _buildFriendsList(List<UserModel> friends) {
-    if (friends.isEmpty) {
-      return _buildEmptyState('No friends yet', 'Add friends to see their music taste');
-    }
-    
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: friends.length,
-      itemBuilder: (context, index) {
-        final friend = friends[index];
-        final friendTopMusic = _dataService.getTopMusicForUser(friend.id);
-        
-        return Card(
-          margin: const EdgeInsets.only(bottom: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Friend header
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(friend.profilePicture),
-                ),
-                title: Text(friend.username),
-                subtitle: const Text('Latest update: Today'),
-              ),
-              
-              // Friend's top 3 music
-              ...List.generate(
-                friendTopMusic.length,
-                (musicIndex) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: MusicCard(
-                    music: friendTopMusic[musicIndex], 
-                    rank: musicIndex + 1,
-                  ),
-                ),
-              ),
-              
-              const SizedBox(height: 8),
-            ],
-          ),
-        );
-      },
-    );
-  }
-  
-  Widget _buildCommunityTracks(List<MusicModel> communityTracks) {
+  Widget _buildCommunityPreview(List<MusicModel> communityTracks) {
     if (communityTracks.isEmpty) {
       return _buildEmptyState('No community tracks yet', 'Be the first to share your favorites!');
     }
     
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            'Trending in the Community',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: communityTracks.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: MusicCard(
-                  music: communityTracks[index],
-                  rank: index + 1,
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+    return SizedBox(
+      height: 300,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: communityTracks.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: MusicCard(
+              music: communityTracks[index],
+              rank: index + 1,
+            ),
+          );
+        },
+      ),
     );
   }
   
   Widget _buildEmptyState(String title, String subtitle) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.music_note,
-            size: 80,
-            color: Colors.grey,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            subtitle,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey[700],
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.music_note,
+              size: 80,
+              color: Colors.grey,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: const TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
