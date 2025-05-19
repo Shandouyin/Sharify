@@ -17,13 +17,15 @@ class _MainScreenState extends State<MainScreen> {
   static final List<Widget> _screens = [
     const HomeScreen(),
     const FriendsScreen(),
-    const Placeholder(),
+    const Placeholder(), // This will be temporarily empty for the '+' button
     const StatisticsScreen(),
     const ProfileScreen(),
   ];
   
   void _onItemTapped(int index) {
+    // If center button (index 2) is tapped, we'll handle it differently
     if (index == 2) {
+      // Show dialog or navigate to create screen
       _showAddDialog();
       return;
     }
@@ -52,6 +54,7 @@ class _MainScreenState extends State<MainScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
+                  // TODO: Navigate to create/edit top 3 screen
                   Navigator.pop(context);
                 },
                 child: const Row(
@@ -74,66 +77,58 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_selectedIndex],
-      bottomNavigationBar: Material(
-        elevation: 8,
-        color: Theme.of(context).colorScheme.surface,
-        child: SizedBox(
-          height: 60,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildNavItem(0, Icons.home, 'Accueil', size: 30),
-              _buildNavItem(1, Icons.people, 'Ami(e)s', size: 30),
-              _buildNavItem(2, Icons.add_circle, '', size: 40),
-              _buildNavItem(3, Icons.bar_chart, 'Stats', size: 30),
-              _buildNavItem(4, Icons.person, 'Profil', size: 30),
-            ],
+      bottomNavigationBar: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          border: Border(
+            top: BorderSide(
+              color: Theme.of(context).dividerColor,
+              width: 0.5
+            ),
           ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem(Icons.home, 'Accueil', 0),
+            _buildNavItem(Icons.people, 'Ami(e)s', 1),
+            _buildNavItem(Icons.add_circle, '', 2, size: 40),
+            _buildNavItem(Icons.bar_chart, 'Statistiques', 3),
+            _buildNavItem(Icons.person, 'Profil', 4),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label, {double size = 24}) {
+  Widget _buildNavItem(IconData icon, String label, int index, {double size = 30}) {
     bool isSelected = _selectedIndex == index;
-    return InkWell(
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () => _onItemTapped(index),
-      child: Ink(
-        child: Center(
-          child: Container(
-            width: 60,
-            height: 60,
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  size: size,
-                  color: isSelected 
-                      ? Theme.of(context).colorScheme.primary 
-                      : Colors.grey,
-                ),
-                if (label.isNotEmpty) 
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 10, // Légèrement plus petit
-                        color: isSelected 
-                            ? Theme.of(context).colorScheme.primary 
-                            : Colors.grey,
-                      ),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis, // Ajouter ceci pour éviter le débordement
-                      maxLines: 1, // Limiter à une seule ligne
-                    ),
-                  ),
-              ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        color: Colors.transparent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: size,
+              color: isSelected ? colorScheme.primary : colorScheme.onSurface,
             ),
-          ),
+            if (label.isNotEmpty)
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected ? colorScheme.primary : colorScheme.onSurface,
+                  fontSize: 12,
+                ),
+              ),
+          ],
         ),
       ),
     );
