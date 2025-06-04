@@ -58,8 +58,7 @@ class MusicCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Row(
-          children: [
-            // Album art
+          children: [            // Album art
             SizedBox(
               width: 80,
               height: 80,
@@ -75,34 +74,8 @@ class MusicCard extends StatelessWidget {
               ),
             ),
             
-            // Rank circle
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                const SizedBox(width: 15),
-                Positioned(
-                  left: -15,
-                  top: -15,
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        rank.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            // Espace entre l'image et le texte
+            const SizedBox(width: 15),
             
             // Song details
             Expanded(
