@@ -25,8 +25,7 @@ class HomeScreen extends StatelessWidget {
               // TODO: Implement search
             },
           ),
-        ],
-      ),
+        ],      ),      
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,8 +90,7 @@ class HomeScreen extends StatelessWidget {
   }
     Widget _buildMyTopMusic(List<MusicModel> topMusic) {
     return topMusic.isEmpty
-        ? _buildEmptyState('You haven\'t added your top tracks yet', 'Tap the edit button to add your favorites')
-        : GlassContainer(
+        ? _buildEmptyState('You haven\'t added your top tracks yet', 'Tap the edit button to add your favorites')        : GlassContainer(
             blur: 10,
             opacity: 0.25,
             margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -121,8 +119,7 @@ class HomeScreen extends StatelessWidget {
     if (communityTracks.isEmpty) {
       return _buildEmptyState('No community tracks yet', 'Be the first to share your favorites!');
     }
-    
-    return GlassContainer(
+      return GlassContainer(
       blur: 10,
       opacity: 0.25,
       margin: const EdgeInsets.symmetric(horizontal: 16),

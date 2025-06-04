@@ -9,7 +9,6 @@ class GlassContainer extends StatelessWidget {
   final BorderRadius? borderRadius;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
-  final bool isScrollable;
   
   const GlassContainer({
     Key? key,
@@ -20,46 +19,13 @@ class GlassContainer extends StatelessWidget {
     this.borderRadius,
     this.padding,
     this.margin,
-    this.isScrollable = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final borderRadiusValue = borderRadius ?? BorderRadius.circular(15);
     
-    // For scrollable content, we need a different approach to prevent the blur from disappearing
-    if (isScrollable) {
-      return Container(
-        margin: margin,
-        child: ClipRRect(
-          borderRadius: borderRadiusValue,
-          child: Stack(
-            children: [
-              // Apply blur to the entire container
-              Positioned.fill(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-                  child: Container(
-                    color: color.withOpacity(opacity),
-                  ),
-                ),
-              ),
-              // Actual content
-              Container(
-                padding: padding,
-                decoration: BoxDecoration(
-                  // Color is already applied in the backdrop filter
-                  borderRadius: borderRadiusValue,
-                ),
-                child: child,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    
-    // For non-scrollable content, the original implementation works fine
+    // Simple conteneur avec effet de blur
     return Container(
       margin: margin,
       child: ClipRRect(

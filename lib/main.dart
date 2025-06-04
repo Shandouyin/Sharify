@@ -6,6 +6,18 @@ void main() {
   runApp(const MyApp());
 }
 
+class CustomScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
+  }
+  
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const ClampingScrollPhysics();
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -14,6 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sharify',
       debugShowCheckedModeBanner: false,
+      scrollBehavior: CustomScrollBehavior(),
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,

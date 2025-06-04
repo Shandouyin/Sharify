@@ -24,8 +24,7 @@ class ProfileScreen extends StatelessWidget {
               // TODO: Navigate to settings
             },
           ),
-        ],
-      ),
+        ],      ),      
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -121,8 +120,7 @@ class ProfileScreen extends StatelessWidget {
     return topMusic.isEmpty
         ? const Center(
             child: Text('No top tracks added yet'),
-          )
-        : GlassContainer(
+          )        : GlassContainer(
             blur: 10,
             opacity: 0.25,
             padding: const EdgeInsets.all(16),

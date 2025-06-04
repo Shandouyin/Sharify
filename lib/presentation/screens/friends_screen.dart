@@ -23,15 +23,12 @@ class FriendsScreen extends StatelessWidget {
   Widget _buildFriendsList(List<UserModel> friends, MockDataService dataService) {
     if (friends.isEmpty) {
       return _buildEmptyState('No friends yet', 'Add friends to see their music taste');
-    }
-    
-    return ListView.builder(
+    }      return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: friends.length,
       itemBuilder: (context, index) {
         final friend = friends[index];
-        final friendTopMusic = dataService.getTopMusicForUser(friend.id);
-          return GlassContainer(
+        final friendTopMusic = dataService.getTopMusicForUser(friend.id);          return GlassContainer(
           blur: 10,
           opacity: 0.25,
           margin: const EdgeInsets.only(bottom: 24),

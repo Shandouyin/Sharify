@@ -33,12 +33,10 @@ class StatisticsScreen extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        Expanded(
-          child: GlassContainer(
+        Expanded(          child: GlassContainer(
             blur: 10,
             opacity: 0.25,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            child: ListView.builder(
+            margin: const EdgeInsets.symmetric(horizontal: 16),child: ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: communityTracks.length,
               itemBuilder: (context, index) {
