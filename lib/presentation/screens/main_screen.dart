@@ -3,6 +3,7 @@ import 'home_screen.dart';
 import 'friends_screen.dart';
 import 'statistics_screen.dart';
 import 'profile_screen.dart';
+import '../../core/widgets/background_container.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -72,11 +73,12 @@ class _MainScreenState extends State<MainScreen> {
       },
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: BackgroundContainer(
+        child: _screens[_selectedIndex],
+      ),
       bottomNavigationBar: Container(
         height: 80,
         decoration: BoxDecoration(

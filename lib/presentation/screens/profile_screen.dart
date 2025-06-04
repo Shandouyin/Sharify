@@ -3,6 +3,7 @@ import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/user_model.dart';
 import '../../data/models/music_model.dart';
 import '../../core/widgets/music_card.dart';
+import '../../core/widgets/glass_container.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -12,8 +13,8 @@ class ProfileScreen extends StatelessWidget {
     final MockDataService dataService = MockDataService();
     final UserModel currentUser = dataService.currentUser;
     final List<MusicModel> userTopMusic = dataService.getTopMusicForUser(currentUser.id);
-    
-    return Scaffold(
+      return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Profil'),
         actions: [
@@ -116,22 +117,34 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
-  
-  Widget _buildMyTopMusic(BuildContext context, List<MusicModel> topMusic) {
+    Widget _buildMyTopMusic(BuildContext context, List<MusicModel> topMusic) {
     return topMusic.isEmpty
         ? const Center(
             child: Text('No top tracks added yet'),
           )
-        : Column(
-            children: List.generate(
-              topMusic.length,
-              (index) => Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: MusicCard(
-                  music: topMusic[index],
-                  rank: index + 1,
+        : GlassContainer(
+            blur: 10,
+            opacity: 0.25,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "My Top 3",
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-              ),
+                const SizedBox(height: 16),
+                ...List.generate(
+                  topMusic.length,
+                  (index) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: MusicCard(
+                      music: topMusic[index],
+                      rank: index + 1,
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
   }

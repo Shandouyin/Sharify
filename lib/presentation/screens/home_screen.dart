@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/widgets/music_card.dart';
+import '../../core/widgets/glass_container.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/music_model.dart';
 import '../../data/models/user_model.dart';
@@ -13,8 +14,8 @@ class HomeScreen extends StatelessWidget {
     final UserModel currentUser = dataService.currentUser;
     final List<MusicModel> userTopMusic = dataService.getTopMusicForUser(currentUser.id);
     final List<MusicModel> communityTracks = dataService.getCommunityTopTracks();
-    
-    return Scaffold(
+      return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Sharify'),
         actions: [
@@ -88,52 +89,58 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-  
-  Widget _buildMyTopMusic(List<MusicModel> topMusic) {
+    Widget _buildMyTopMusic(List<MusicModel> topMusic) {
     return topMusic.isEmpty
         ? _buildEmptyState('You haven\'t added your top tracks yet', 'Tap the edit button to add your favorites')
-        : SizedBox(
-            height: 300,
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: topMusic.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: MusicCard(
-                    music: topMusic[index],
-                    rank: index + 1,
-                    onTap: () {
-                      // TODO: Show details or play preview
-                    },
+        : GlassContainer(
+            blur: 10,
+            opacity: 0.25,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...List.generate(
+                  topMusic.length,
+                  (index) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: MusicCard(
+                      music: topMusic[index],
+                      rank: index + 1,
+                      onTap: () {
+                        // TODO: Show details or play preview
+                      },
+                    ),
                   ),
-                );
-              },
+                ),
+              ],
             ),
           );
   }
-  
-  Widget _buildCommunityPreview(List<MusicModel> communityTracks) {
+    Widget _buildCommunityPreview(List<MusicModel> communityTracks) {
     if (communityTracks.isEmpty) {
       return _buildEmptyState('No community tracks yet', 'Be the first to share your favorites!');
     }
     
-    return SizedBox(
-      height: 300,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: communityTracks.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: MusicCard(
-              music: communityTracks[index],
-              rank: index + 1,
+    return GlassContainer(
+      blur: 10,
+      opacity: 0.25,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...List.generate(
+            communityTracks.length,
+            (index) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: MusicCard(
+                music: communityTracks[index],
+                rank: index + 1,
+              ),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

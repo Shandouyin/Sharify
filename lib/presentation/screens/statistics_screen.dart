@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/music_model.dart';
 import '../../core/widgets/music_card.dart';
+import '../../core/widgets/glass_container.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
@@ -10,8 +11,8 @@ class StatisticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final MockDataService dataService = MockDataService();
     final List<MusicModel> communityTracks = dataService.getCommunityTopTracks();
-    
-    return Scaffold(
+      return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Statistiques'),
       ),
@@ -23,8 +24,7 @@ class StatisticsScreen extends StatelessWidget {
     if (communityTracks.isEmpty) {
       return _buildEmptyState('No community tracks yet', 'Be the first to share your favorites!');
     }
-    
-    return Column(
+      return Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
@@ -34,18 +34,23 @@ class StatisticsScreen extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: communityTracks.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: MusicCard(
-                  music: communityTracks[index],
-                  rank: index + 1,
-                ),
-              );
-            },
+          child: GlassContainer(
+            blur: 10,
+            opacity: 0.25,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: communityTracks.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: MusicCard(
+                    music: communityTracks[index],
+                    rank: index + 1,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ],

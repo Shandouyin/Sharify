@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/user_model.dart';
 import '../../core/widgets/music_card.dart';
+import '../../core/widgets/glass_container.dart';
 
 class FriendsScreen extends StatelessWidget {
   const FriendsScreen({super.key});
@@ -10,8 +11,8 @@ class FriendsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final MockDataService dataService = MockDataService();
     final List<UserModel> friends = dataService.getFriendsForCurrentUser();
-    
-    return Scaffold(
+      return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Ami(e)s'),
       ),
@@ -30,9 +31,11 @@ class FriendsScreen extends StatelessWidget {
       itemBuilder: (context, index) {
         final friend = friends[index];
         final friendTopMusic = dataService.getTopMusicForUser(friend.id);
-        
-        return Card(
+          return GlassContainer(
+          blur: 10,
+          opacity: 0.25,
           margin: const EdgeInsets.only(bottom: 24),
+          padding: const EdgeInsets.all(8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

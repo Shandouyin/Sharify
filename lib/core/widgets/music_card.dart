@@ -5,13 +5,47 @@ class MusicCard extends StatelessWidget {
   final MusicModel music;
   final int rank;
   final VoidCallback? onTap;
+  final Color? backgroundColor;
+  final Color? buttonColor;
 
   const MusicCard({
     super.key,
     required this.music,
     required this.rank,
     this.onTap,
+    this.backgroundColor,
+    this.buttonColor,
   });
+  // Get colors based on rank
+  Color getBackgroundColor() {
+    if (backgroundColor != null) return backgroundColor!;
+    
+    switch (rank) {
+      case 1:
+        return const Color(0xFFF0C300).withOpacity(0.25); // Gold for 1st
+      case 2:
+        return const Color(0xFFF0F0F0).withOpacity(0.25); // Silver for 2nd
+      case 3:
+        return const Color(0xFFAD390E).withOpacity(0.25); // Bronze for 3rd
+      default:
+        return Colors.grey.withOpacity(0.25);
+    }
+  }
+
+  Color getButtonColor() {
+    if (buttonColor != null) return buttonColor!;
+    
+    switch (rank) {
+      case 1:
+        return const Color(0xFFFF9900); // Gold button
+      case 2:
+        return const Color(0xFFC1D4ED); // Silver button
+      case 3:
+        return const Color(0xFFB74210); // Bronze button
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +54,7 @@ class MusicCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
+      color: getBackgroundColor(),
       child: InkWell(
         onTap: onTap,
         child: Row(
@@ -95,11 +130,13 @@ class MusicCard extends StatelessWidget {
                 ),
               ),
             ),
-            
-            // Play button
+              // Play button
             IconButton(
-              icon: const Icon(Icons.play_circle_filled),
-              color: Theme.of(context).colorScheme.primary,
+              icon: Icon(
+                Icons.play_circle_filled, 
+                color: getButtonColor(),
+                size: 42,
+              ),
               onPressed: () {
                 // TODO: Implement preview playback
               },
