@@ -4,9 +4,9 @@ class BackgroundContainer extends StatelessWidget {
   final Widget child;
 
   const BackgroundContainer({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

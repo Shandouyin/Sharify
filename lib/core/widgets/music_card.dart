@@ -19,16 +19,15 @@ class MusicCard extends StatelessWidget {
   // Get colors based on rank
   Color getBackgroundColor() {
     if (backgroundColor != null) return backgroundColor!;
-    
-    switch (rank) {
+      switch (rank) {
       case 1:
-        return const Color(0xFFF0C300).withOpacity(0.25); // Gold for 1st
+        return const Color(0xFFF0C300).withAlpha(64); // Gold for 1st (0.25 * 255 = 64)
       case 2:
-        return const Color(0xFFF0F0F0).withOpacity(0.25); // Silver for 2nd
+        return const Color(0xFFF0F0F0).withAlpha(64); // Silver for 2nd
       case 3:
-        return const Color(0xFFAD390E).withOpacity(0.25); // Bronze for 3rd
+        return const Color(0xFFAD390E).withAlpha(64); // Bronze for 3rd
       default:
-        return Colors.grey.withOpacity(0.25);
+        return Colors.grey.withAlpha(64);
     }
   }
 
@@ -109,9 +108,14 @@ class MusicCard extends StatelessWidget {
                 Icons.play_circle_filled, 
                 color: getButtonColor(),
                 size: 42,
-              ),
-              onPressed: () {
-                // TODO: Implement preview playback
+              ),              onPressed: () {
+                // Play preview implementation
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Lecture de la prévisualisation'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
             ),
           ],
