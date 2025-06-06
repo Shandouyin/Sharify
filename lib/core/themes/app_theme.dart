@@ -20,7 +20,7 @@ class AppTheme {
       error: errorColor,
     ),
     scaffoldBackgroundColor: backgroundColor,
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: cardColor,
       elevation: 2,
       margin: EdgeInsets.all(8),
@@ -53,7 +53,7 @@ class AppTheme {
       error: errorColor,
     ),
     scaffoldBackgroundColor: secondaryColor,
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: const Color(0xFF303030),
       elevation: 2,
       margin: const EdgeInsets.all(8),
