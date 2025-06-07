@@ -7,24 +7,14 @@ import '../../core/widgets/glass_container.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final MockDataService dataService = MockDataService();
     final UserModel currentUser = dataService.currentUser;
-    final List<MusicModel> userTopMusic = dataService.getTopMusicForUser(currentUser.id);
-      return Scaffold(
+    final List<MusicModel> userTopMusic =
+        dataService.getTopMusicForUser(currentUser.id);
+    return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        title: const Text('Profil'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              // TODO: Navigate to settings
-            },
-          ),
-        ],      ),      
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -51,7 +41,8 @@ class ProfileScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildStatCard(context, currentUser.friendIds.length.toString(), 'Friends'),
+                      _buildStatCard(context,
+                          currentUser.friendIds.length.toString(), 'Friends'),
                       const SizedBox(width: 20),
                       _buildStatCard(context, '42', 'Updates'),
                     ],
@@ -59,9 +50,9 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             const Divider(),
-            
+
             // My Top 3 section
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -94,7 +85,7 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildStatCard(BuildContext context, String value, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -116,11 +107,13 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
-    Widget _buildMyTopMusic(BuildContext context, List<MusicModel> topMusic) {
+
+  Widget _buildMyTopMusic(BuildContext context, List<MusicModel> topMusic) {
     return topMusic.isEmpty
         ? const Center(
             child: Text('No top tracks added yet'),
-          )        : GlassContainer(
+          )
+        : GlassContainer(
             blur: 10,
             opacity: 0.25,
             padding: const EdgeInsets.all(16),

@@ -10,11 +10,8 @@ class LikeButton extends StatefulWidget {
   final Function() onLikeChanged;
   final int initialCount;
 
-  const LikeButton({
-    super.key, 
-    required this.onLikeChanged, 
-    required this.initialCount
-  });
+  const LikeButton(
+      {super.key, required this.onLikeChanged, required this.initialCount});
 
   @override
   State<LikeButton> createState() => _LikeButtonState();
@@ -29,6 +26,7 @@ class _LikeButtonState extends State<LikeButton> {
     super.initState();
     likeCount = widget.initialCount;
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -71,17 +69,17 @@ class FriendsScreen extends StatefulWidget {
 class _FriendsScreenState extends State<FriendsScreen> {
   final MockDataService dataService = MockDataService();
   late List<UserModel> friends;
-  
+
   // Compteurs pour les interactions sociales
   final Map<int, int> likeCounts = {};
   final Map<int, int> shareCounts = {};
   final Map<int, int> commentCounts = {};
-  
+
   @override
   void initState() {
     super.initState();
     friends = dataService.getFriendsForCurrentUser();
-    
+
     // Initialiser les compteurs avec des valeurs par défaut
     for (int i = 0; i < friends.length; i++) {
       likeCounts[i] = 24 + (i % 3);
@@ -89,7 +87,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
       commentCounts[i] = 12 + (i % 5);
     }
   }
-  
+
   void incrementLikes(int friendIndex) {
     setState(() {
       likeCounts[friendIndex] = (likeCounts[friendIndex] ?? 0) + 1;
@@ -101,30 +99,28 @@ class _FriendsScreenState extends State<FriendsScreen> {
       commentCounts[friendIndex] = count;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        title: const Text('Ami(e)s'),
-      ),
       body: _buildFriendsList(),
     );
   }
-  
+
   Widget _buildFriendsList() {
     if (friends.isEmpty) {
-      return _buildEmptyState('No friends yet', 'Add friends to see their music taste');
+      return _buildEmptyState(
+          'No friends yet', 'Add friends to see their music taste');
     }
-    
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: friends.length,
       itemBuilder: (context, index) {
         final friend = friends[index];
         final friendTopMusic = dataService.getTopMusicForUser(friend.id);
-        
+
         return GlassContainer(
           blur: 10,
           opacity: 0.25,
@@ -135,7 +131,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
             children: [
               // Friend header
               ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 leading: CircleAvatar(
                   radius: 28, // Taille augmentée (par défaut c'était ~20)
                   backgroundImage: NetworkImage(friend.profilePicture),
@@ -147,23 +144,25 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                subtitle: Text('${20 - index}/05/2025'), // Date simulée différente pour chaque ami
+                subtitle: Text(
+                    '${20 - index}/05/2025'), // Date simulée différente pour chaque ami
               ),
-              
+
               // Friend's top 3 music
               ...List.generate(
                 friendTopMusic.length,
                 (musicIndex) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: MusicCard(
-                    music: friendTopMusic[musicIndex], 
+                    music: friendTopMusic[musicIndex],
                     rank: musicIndex + 1,
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 12),
-                // Ajout des icônes d'interaction
+              // Ajout des icônes d'interaction
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
@@ -178,7 +177,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         ),
                       ],
                     ),
-                      // Icône de partage avec compteur
+                    // Icône de partage avec compteur
                     Column(
                       children: [
                         IconButton(
@@ -191,7 +190,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             _showShareOptions(context, friend, index);
                           },
                         ),
-                        const SizedBox(height: 2), // Espace réduit entre l'icône et le nombre
+                        const SizedBox(
+                            height:
+                                2), // Espace réduit entre l'icône et le nombre
                         Text(
                           '${shareCounts[index]}',
                           style: const TextStyle(
@@ -202,7 +203,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         ),
                       ],
                     ),
-                    
+
                     // Icône de commentaire avec compteur
                     Column(
                       children: [
@@ -216,7 +217,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             // Afficher une boîte de dialogue pour les commentaires
                             showModalBottomSheet(
                               context: context,
-                              isScrollControlled: true, // Pour que le clavier ne cache pas le champ de texte
+                              isScrollControlled:
+                                  true, // Pour que le clavier ne cache pas le champ de texte
                               backgroundColor: Colors.transparent,
                               builder: (context) => CommentSheet(
                                 username: friend.username,
@@ -227,7 +229,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             );
                           },
                         ),
-                        const SizedBox(height: 2), // Espace réduit entre l'icône et le nombre
+                        const SizedBox(
+                            height:
+                                2), // Espace réduit entre l'icône et le nombre
                         Text(
                           '${commentCounts[index]}',
                           style: const TextStyle(
@@ -241,7 +245,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 8),
             ],
           ),
@@ -249,7 +253,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
       },
     );
   }
-    Widget _buildEmptyState(String title, String subtitle) {
+
+  Widget _buildEmptyState(String title, String subtitle) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -275,17 +280,18 @@ class _FriendsScreenState extends State<FriendsScreen> {
       ),
     );
   }
-  
+
   // Méthode pour afficher les options de partage
   void _showShareOptions(BuildContext context, UserModel friend, int index) {
     // Incrémenter le compteur de partage
     setState(() {
       shareCounts[index] = (shareCounts[index] ?? 0) + 1;
     });
-    
+
     // Texte à partager
-    final String shareText = "Découvre le top 3 musical de ${friend.username} sur Sharify!";
-    
+    final String shareText =
+        "Découvre le top 3 musical de ${friend.username} sur Sharify!";
+
     // Afficher une boîte de dialogue modale avec les options de partage
     showModalBottomSheet(
       context: context,
@@ -304,33 +310,41 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 padding: const EdgeInsets.only(bottom: 20),
                 child: Text(
                   'Partager avec',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(color: Colors.white),
                 ),
               ),
-              
+
               // Options de partage
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildShareOption(context, Icons.message, Colors.green, 'Message', () {
+                  _buildShareOption(
+                      context, Icons.message, Colors.green, 'Message', () {
                     Navigator.pop(context);
                     _simulateShare(context, 'Message', shareText);
                   }),
-                  _buildShareOption(context, Icons.email, Colors.red, 'Email', () {
+                  _buildShareOption(context, Icons.email, Colors.red, 'Email',
+                      () {
                     Navigator.pop(context);
                     _simulateShare(context, 'Email', shareText);
                   }),
-                  _buildShareOption(context, Icons.facebook, Colors.blue, 'Facebook', () {
+                  _buildShareOption(
+                      context, Icons.facebook, Colors.blue, 'Facebook', () {
                     Navigator.pop(context);
                     _simulateShare(context, 'Facebook', shareText);
                   }),
-                  _buildShareOption(context, Icons.link, Colors.orange, 'Copier', () {
+                  _buildShareOption(
+                      context, Icons.link, Colors.orange, 'Copier', () {
                     Navigator.pop(context);
-                    _simulateShare(context, 'Copier le lien', shareText, isLink: true);
+                    _simulateShare(context, 'Copier le lien', shareText,
+                        isLink: true);
                   }),
                 ],
               ),
-              
+
               // Plus d'options
               const SizedBox(height: 20),
               TextButton.icon(
@@ -350,19 +364,15 @@ class _FriendsScreenState extends State<FriendsScreen> {
       },
     );
   }
-  
+
   // Construire une option de partage individuelle
-  Widget _buildShareOption(
-    BuildContext context, 
-    IconData icon, 
-    Color color, 
-    String label, 
-    VoidCallback onTap
-  ) {
+  Widget _buildShareOption(BuildContext context, IconData icon, Color color,
+      String label, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       child: Column(
-        children: [          CircleAvatar(
+        children: [
+          CircleAvatar(
             backgroundColor: color.withAlpha(51), // 0.2 * 255 = 51
             radius: 25,
             child: Icon(icon, color: color, size: 25),
@@ -376,9 +386,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
       ),
     );
   }
-  
+
   // Simuler un partage (dans une vraie application, vous utiliseriez un package comme share_plus)
-  void _simulateShare(BuildContext context, String platform, String content, {bool isLink = false}) {
+  void _simulateShare(BuildContext context, String platform, String content,
+      {bool isLink = false}) {
     if (isLink) {
       // Simuler la copie du lien
       ScaffoldMessenger.of(context).showSnackBar(

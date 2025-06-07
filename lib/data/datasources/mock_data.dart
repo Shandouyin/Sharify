@@ -3,86 +3,77 @@ import '../models/user_model.dart';
 
 /// Classe contenant uniquement les données mockées pour l'application Sharify
 class MockData {
-  // Données musicales mockées
-  static final List<MusicModel> musicList = [
-    MusicModel(
+  static final List<MusicModel> musicList = [    MusicModel(
       id: 'm1',
-      title: 'Blinding Lights',
-      artist: 'The Weeknd',
+      title: 'Billie Jean',
+      artist: 'Michael Jackson',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b273c5649add07ed3720be9d5526',
+          'https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png',
       previewUrl: 'https://example.com/preview1',
-    ),
-    MusicModel(
+    ),MusicModel(
       id: 'm2',
-      title: 'As It Was',
-      artist: 'Harry Styles',
-      albumArt:
-          'https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0',
-      previewUrl: 'https://example.com/preview2',
-    ),
-    MusicModel(
-      id: 'm3',
-      title: 'Bad Habits',
+      title: 'Shape of You',
       artist: 'Ed Sheeran',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b2732a038d3bf875d23e4aeaa84e',
-      previewUrl: 'https://example.com/preview3',
-    ),
-    MusicModel(
-      id: 'm4',
-      title: 'Stay',
-      artist: 'The Kid LAROI & Justin Bieber',
+          'https://upload.wikimedia.org/wikipedia/en/b/b4/Shape_Of_You_%28Official_Single_Cover%29_by_Ed_Sheeran.png',
+      previewUrl: 'https://example.com/preview2',
+    ),    MusicModel(
+      id: 'm3',
+      title: 'Bohemian Rhapsody',
+      artist: 'Queen',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b273bd9ef5c294ede777c8328a02',
+          'https://upload.wikimedia.org/wikipedia/en/9/9f/Bohemian_Rhapsody.png',
+      previewUrl: 'https://example.com/preview3',
+    ),    MusicModel(
+      id: 'm4',
+      title: 'Happy',
+      artist: 'Pharrell Williams',
+      albumArt:
+          'https://upload.wikimedia.org/wikipedia/en/2/23/Pharrell_Williams_-_Happy.jpg',
       previewUrl: 'https://example.com/preview4',
     ),
     MusicModel(
       id: 'm5',
-      title: 'Heat Waves',
-      artist: 'Glass Animals',
+      title: 'Fortnight',
+      artist: 'Taylor Swift ft. Post Malone',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b273c63be7d5cd8dd93c9d5a1afe',
+          'https://i.scdn.co/image/ab67616d0000b2730b04da4f224b51ff86e0a481',
       previewUrl: 'https://example.com/preview5',
     ),
     MusicModel(
       id: 'm6',
-      title: 'Montero (Call Me By Your Name)',
-      artist: 'Lil Nas X',
+      title: 'Kill Bill',
+      artist: 'SZA',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b273be82673b5f79d9658ec0a9fd',
+          'https://i.scdn.co/image/ab67616d0000b2730c471c36970b9406233842a5',
       previewUrl: 'https://example.com/preview6',
-    ),
-    MusicModel(
+    ),    MusicModel(
       id: 'm7',
-      title: 'Dance The Night',
-      artist: 'Dua Lipa',
+      title: 'Blinding Lights',
+      artist: 'The Weeknd',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b273864ddb3f85d72b6eb1404d6b',
+          'https://upload.wikimedia.org/wikipedia/en/e/e6/The_Weeknd_-_Blinding_Lights.png',
       previewUrl: 'https://example.com/preview7',
-    ),
-    MusicModel(
+    ),MusicModel(
       id: 'm8',
-      title: 'Cruel Summer',
-      artist: 'Taylor Swift',
+      title: 'Despacito',
+      artist: 'Luis Fonsi ft. Daddy Yankee',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b273e787cffec20aa2a396a61647',
+          'https://upload.wikimedia.org/wikipedia/en/c/c8/Luis_Fonsi_Feat._Daddy_Yankee_-_Despacito_%28Official_Single_Cover%29.png',
       previewUrl: 'https://example.com/preview8',
-    ),
-    MusicModel(
+    ),MusicModel(
       id: 'm9',
-      title: 'Flowers',
-      artist: 'Miley Cyrus',
+      title: 'Imagine',
+      artist: 'John Lennon',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b2739b8379f34256c5ce3a38febd',
+          'https://upload.wikimedia.org/wikipedia/en/6/69/ImagineCover.jpg',
       previewUrl: 'https://example.com/preview9',
-    ),
-    MusicModel(
+    ),MusicModel(
       id: 'm10',
-      title: 'Levitating',
-      artist: 'Dua Lipa ft. DaBaby',
+      title: 'Hotel California',
+      artist: 'Eagles',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b2734aeaee7a1e4e5a92822a22f0',
+          'https://upload.wikimedia.org/wikipedia/en/4/49/Hotelcalifornia.jpg',
       previewUrl: 'https://example.com/preview10',
     ),
     MusicModel(
@@ -92,13 +83,12 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b273072e9faef2ef7b6db63834a3',
       previewUrl: 'https://example.com/preview11',
-    ),
-    MusicModel(
+    ),    MusicModel(
       id: 'm12',
-      title: 'abcdefu',
-      artist: 'GAYLE',
+      title: 'Thriller',
+      artist: 'Michael Jackson',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b273ba7fe7dd76cd3d7e3e1b7b6a',
+          'https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png',
       previewUrl: 'https://example.com/preview12',
     ),
     MusicModel(
@@ -116,13 +106,12 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36',
       previewUrl: 'https://example.com/preview14',
-    ),
-    MusicModel(
+    ),    MusicModel(
       id: 'm15',
-      title: 'Golden Hour',
-      artist: 'JVKE',
+      title: 'Stairway to Heaven',
+      artist: 'Led Zeppelin',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b2733986c160b0d3bcc84596d452',
+          'https://upload.wikimedia.org/wikipedia/en/2/26/Led_Zeppelin_-_Led_Zeppelin_IV.jpg',
       previewUrl: 'https://example.com/preview15',
     ),
     MusicModel(
@@ -140,13 +129,12 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b2734ae1c4c5c45aabe565499163',
       previewUrl: 'https://example.com/preview17',
-    ),
-    MusicModel(
+    ),    MusicModel(
       id: 'm18',
-      title: 'Sweater Weather',
-      artist: 'The Neighbourhood',
+      title: 'Flowers',
+      artist: 'Miley Cyrus',
       albumArt:
-          'https://i.scdn.co/image/ab67616d0000b273a9037e3111e873734acc8b70',
+          'https://i.scdn.co/image/ab67616d0000b273f429549123dbe8552764ba1d',
       previewUrl: 'https://example.com/preview18',
     ),
     MusicModel(

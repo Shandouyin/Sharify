@@ -14,7 +14,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-  
+
   static final List<Widget> _screens = [
     const HomeScreen(),
     const FriendsScreen(),
@@ -22,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
     const StatisticsScreen(),
     const ProfileScreen(),
   ];
-  
+
   void _onItemTapped(int index) {
     // If center button (index 2) is tapped, we'll handle it differently
     if (index == 2) {
@@ -30,12 +30,12 @@ class _MainScreenState extends State<MainScreen> {
       _showAddDialog();
       return;
     }
-    
+
     setState(() {
       _selectedIndex = index;
     });
   }
-  
+
   void _showAddDialog() {
     showModalBottomSheet(
       context: context,
@@ -73,64 +73,100 @@ class _MainScreenState extends State<MainScreen> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
+    // Liste des titres pour chaque écran de navigation
+    final List<String> titles = [
+      'Sharify', // Home
+      'Ami(e)s', // Friends
+      '', // Add button (pas de titre)
+      'Statistiques',
+      'Profil',
+    ];
+
     return Scaffold(
+      appBar: _selectedIndex != 2
+          ? AppBar(
+              title: Text(titles[_selectedIndex]),
+              backgroundColor: Colors.black,
+              scrolledUnderElevation:
+                  0, // Désactive l'effet d'élévation lors du défilement
+              elevation: 0, // Supprime l'ombre
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    // TODO: Implement search
+                  },
+                ),
+              ],
+            )
+          : null, // Pas d'AppBar pour l'écran du bouton d'ajout
       body: BackgroundContainer(
         child: _screens[_selectedIndex],
       ),
-      bottomNavigationBar: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border(
-            top: BorderSide(
-              color: Theme.of(context).dividerColor,
-              width: 0.5
-            ),
+      extendBody: true, // Pour permettre au contenu d'aller sous la navbar
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
+        child: Container(
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius:
+                BorderRadius.circular(30), // Plus grand rayon pour plus d'arc
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildNavItem(Icons.home, 'Accueil', 0),
-            _buildNavItem(Icons.people, 'Ami(e)s', 1),
-            _buildNavItem(Icons.add_circle, '', 2, size: 40),
-            _buildNavItem(Icons.bar_chart, 'Statistiques', 3),
-            _buildNavItem(Icons.person, 'Profil', 4),
-          ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildNavItem(Icons.home, 'Accueil', 0),
+              _buildNavItem(Icons.people, 'Ami(e)s', 1),
+              _buildNavItem(Icons.add_circle, '', 2, size: 34),
+              _buildNavItem(Icons.bar_chart, 'Statistiques', 3),
+              _buildNavItem(Icons.person, 'Profil', 4),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, int index, {double size = 30}) {
+  Widget _buildNavItem(IconData icon, String label, int index,
+      {double size = 30}) {
     bool isSelected = _selectedIndex == index;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => _onItemTapped(index),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        color: Colors.transparent,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: size,
-              color: isSelected ? colorScheme.primary : colorScheme.onSurface,
-            ),
-            if (label.isNotEmpty)
-              Text(
-                label,
-                style: TextStyle(
-                  color: isSelected ? colorScheme.primary : colorScheme.onSurface,
-                  fontSize: 12,
-                ),
+    const Color selectedColor = Color(0xFF0F7ACC); // Bleu spécifié (0F7ACC)
+
+    // Calculer la largeur pour chaque élément de manière fixe
+    final double itemWidth = MediaQuery.of(context).size.width / 5 - 10;
+
+    return SizedBox(
+      width: itemWidth, // Largeur fixe
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _onItemTapped(index),
+        child: Container(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: size,
+                color: isSelected ? selectedColor : Colors.white,
               ),
-          ],
+              if (label.isNotEmpty)
+                Text(
+                  label,
+                  textAlign: TextAlign.center, // Centre le texte
+                  style: TextStyle(
+                    color: isSelected ? selectedColor : Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight
+                        .w500, // Utiliser w500 (medium) au lieu de basculer entre normal/bold
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

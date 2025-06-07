@@ -127,17 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        title: const Text('Sharify'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: Implement search
-            },
-          ),
-        ],
-      ),
       body: _buildCommunityUsersList(),
     );
   }
