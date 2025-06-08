@@ -44,10 +44,82 @@ class MusicCard extends StatelessWidget {
       default:
         return Colors.grey;
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  }  @override
+  Widget build(BuildContext context) {    // Si backgroundColor est transparent, on utilise un conteneur simple sans Card
+    if (backgroundColor == Colors.transparent) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Row(
+          children: [
+            // Album art
+            SizedBox(
+              width: 80,
+              height: 80,
+              child: Image.network(
+                music.albumArt,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.music_note, size: 40),
+                  );
+                },
+              ),
+            ),
+            
+            // Espace entre l'image et le texte
+            const SizedBox(width: 15),
+            
+            // Song details
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [                    Text(
+                      music.title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      music.artist,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            
+            // Play button
+            IconButton(
+              icon: Icon(
+                Icons.play_circle_filled, 
+                color: getButtonColor(),
+                size: 42,
+              ),       
+              onPressed: () {
+                // Play preview implementation
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Lecture de la prévisualisation'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      );
+    }
+    
+    // Comportement normal avec Card pour les autres cas
     return Card(
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
@@ -75,8 +147,7 @@ class MusicCard extends StatelessWidget {
             
             // Espace entre l'image et le texte
             const SizedBox(width: 15),
-            
-            // Song details
+              // Song details
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -87,6 +158,9 @@ class MusicCard extends StatelessWidget {
                       music.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: backgroundColor == Colors.transparent 
+                            ? Colors.white 
+                            : null, // Use theme color for Card version
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -94,7 +168,11 @@ class MusicCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       music.artist,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: backgroundColor == Colors.transparent 
+                            ? Colors.white70 
+                            : null, // Use theme color for Card version
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -102,13 +180,15 @@ class MusicCard extends StatelessWidget {
                 ),
               ),
             ),
-              // Play button
+            
+            // Play button
             IconButton(
               icon: Icon(
                 Icons.play_circle_filled, 
                 color: getButtonColor(),
                 size: 42,
-              ),              onPressed: () {
+              ),       
+              onPressed: () {
                 // Play preview implementation
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

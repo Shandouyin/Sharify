@@ -4,6 +4,7 @@ import '../screens/home_screen.dart';
 import '../screens/friends_screen.dart';
 import '../screens/statistics_screen.dart';
 import '../screens/profile_screen.dart';
+import '../screens/create_top3_screen.dart';
 
 class AppRouter {
   // Route names
@@ -12,8 +13,8 @@ class AppRouter {
   static const String friends = '/friends';
   static const String statistics = '/statistics';
   static const String profile = '/profile';
-  
-  // Route generation
+  static const String createTop3 = '/create-top3';
+    // Route generation
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case main:
@@ -26,6 +27,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const StatisticsScreen());
       case profile:
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
+      case createTop3:
+        return MaterialPageRoute(builder: (_) => const CreateTop3Screen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

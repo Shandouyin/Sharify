@@ -3,6 +3,7 @@ import 'home_screen.dart';
 import 'friends_screen.dart';
 import 'statistics_screen.dart';
 import 'profile_screen.dart';
+import 'create_top3_screen.dart';
 import '../../core/widgets/background_container.dart';
 
 class MainScreen extends StatefulWidget {
@@ -14,95 +15,48 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-
-  static final List<Widget> _screens = [
-    const HomeScreen(),
-    const FriendsScreen(),
-    const Placeholder(), // This will be temporarily empty for the '+' button
-    const StatisticsScreen(),
-    const ProfileScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    // If center button (index 2) is tapped, we'll handle it differently
-    if (index == 2) {
-      // Show dialog or navigate to create screen
-      _showAddDialog();
-      return;
-    }
-
+  
+  // Méthode pour changer d'écran (publique pour être accessible)
+  void changeScreen(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
-
-  void _showAddDialog() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Create New',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Navigate to create/edit top 3 screen
-                  Navigator.pop(context);
-                },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.music_note),
-                    SizedBox(width: 10),
-                    Text('Edit My Top 3'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+  
+  late final List<Widget> _screens = [
+    const HomeScreen(),
+    const FriendsScreen(),
+    CreateTop3Screen(onNavigateToHome: changeScreen),
+    const StatisticsScreen(),
+    const ProfileScreen(),
+  ];  void _onItemTapped(int index) {
+    changeScreen(index);
   }
-
   @override
   Widget build(BuildContext context) {
     // Liste des titres pour chaque écran de navigation
     final List<String> titles = [
       'Sharify', // Home
       'Ami(e)s', // Friends
-      '', // Add button (pas de titre)
+      'Création du Top 3', // Create Top 3
       'Statistiques',
       'Profil',
-    ];
-
-    return Scaffold(
-      appBar: _selectedIndex != 2
-          ? AppBar(
-              title: Text(titles[_selectedIndex]),
-              backgroundColor: Colors.black,
-              scrolledUnderElevation:
-                  0, // Désactive l'effet d'élévation lors du défilement
-              elevation: 0, // Supprime l'ombre
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    // TODO: Implement search
-                  },
-                ),
-              ],
-            )
-          : null, // Pas d'AppBar pour l'écran du bouton d'ajout
+    ];    return Scaffold(
+      appBar: AppBar(
+        title: Text(titles[_selectedIndex]),
+        backgroundColor: Colors.black,
+        scrolledUnderElevation:
+            0, // Désactive l'effet d'élévation lors du défilement
+        elevation: 0, // Supprime l'ombre
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              // TODO: Implement search
+            },
+          ),
+        ],
+      ),
       body: BackgroundContainer(
         child: _screens[_selectedIndex],
       ),

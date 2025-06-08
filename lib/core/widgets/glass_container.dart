@@ -19,7 +19,6 @@ class GlassContainer extends StatelessWidget {
     this.padding,
     this.margin,
   });
-
   @override
   Widget build(BuildContext context) {
     final borderRadiusValue = borderRadius ?? BorderRadius.circular(15);
@@ -30,14 +29,11 @@ class GlassContainer extends StatelessWidget {
       child: ClipRRect(
         borderRadius: borderRadiusValue,
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),          child: Container(
+          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+          child: Container(
             padding: padding,
-            decoration: BoxDecoration(              color: Color.fromRGBO(
-                color.r.toInt(),
-                color.g.toInt(),
-                color.b.toInt(),
-                opacity,
-              ),
+            decoration: BoxDecoration(
+              color: color.withOpacity(opacity),
               borderRadius: borderRadiusValue,
             ),
             child: child,
