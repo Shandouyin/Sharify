@@ -10,6 +10,7 @@ class MockData {
       albumArt:
           'https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png',
       previewUrl: 'https://example.com/preview1',
+      genre: 'Pop',
     ),MusicModel(
       id: 'm2',
       title: 'Shape of You',
@@ -17,6 +18,7 @@ class MockData {
       albumArt:
           'https://upload.wikimedia.org/wikipedia/en/b/b4/Shape_Of_You_%28Official_Single_Cover%29_by_Ed_Sheeran.png',
       previewUrl: 'https://example.com/preview2',
+      genre: 'Pop',
     ),    MusicModel(
       id: 'm3',
       title: 'Bohemian Rhapsody',
@@ -24,6 +26,7 @@ class MockData {
       albumArt:
           'https://upload.wikimedia.org/wikipedia/en/9/9f/Bohemian_Rhapsody.png',
       previewUrl: 'https://example.com/preview3',
+      genre: 'Rock',
     ),    MusicModel(
       id: 'm4',
       title: 'Happy',
@@ -31,6 +34,7 @@ class MockData {
       albumArt:
           'https://upload.wikimedia.org/wikipedia/en/2/23/Pharrell_Williams_-_Happy.jpg',
       previewUrl: 'https://example.com/preview4',
+      genre: 'Pop',
     ),
     MusicModel(
       id: 'm5',
@@ -39,6 +43,7 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b2730b04da4f224b51ff86e0a481',
       previewUrl: 'https://example.com/preview5',
+      genre: 'Pop',
     ),
     MusicModel(
       id: 'm6',
@@ -47,6 +52,7 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b2730c471c36970b9406233842a5',
       previewUrl: 'https://example.com/preview6',
+      genre: 'R&B',
     ),    MusicModel(
       id: 'm7',
       title: 'Blinding Lights',
@@ -54,6 +60,7 @@ class MockData {
       albumArt:
           'https://upload.wikimedia.org/wikipedia/en/e/e6/The_Weeknd_-_Blinding_Lights.png',
       previewUrl: 'https://example.com/preview7',
+      genre: 'Pop',
     ),MusicModel(
       id: 'm8',
       title: 'Despacito',
@@ -61,6 +68,7 @@ class MockData {
       albumArt:
           'https://upload.wikimedia.org/wikipedia/en/c/c8/Luis_Fonsi_Feat._Daddy_Yankee_-_Despacito_%28Official_Single_Cover%29.png',
       previewUrl: 'https://example.com/preview8',
+      genre: 'Latin',
     ),MusicModel(
       id: 'm9',
       title: 'Imagine',
@@ -68,6 +76,7 @@ class MockData {
       albumArt:
           'https://upload.wikimedia.org/wikipedia/en/6/69/ImagineCover.jpg',
       previewUrl: 'https://example.com/preview9',
+      genre: 'Rock',
     ),MusicModel(
       id: 'm10',
       title: 'Hotel California',
@@ -75,6 +84,7 @@ class MockData {
       albumArt:
           'https://upload.wikimedia.org/wikipedia/en/4/49/Hotelcalifornia.jpg',
       previewUrl: 'https://example.com/preview10',
+      genre: 'Rock',
     ),
     MusicModel(
       id: 'm11',
@@ -83,6 +93,7 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b273072e9faef2ef7b6db63834a3',
       previewUrl: 'https://example.com/preview11',
+      genre: 'Hip-Hop',
     ),    MusicModel(
       id: 'm12',
       title: 'Thriller',
@@ -90,6 +101,7 @@ class MockData {
       albumArt:
           'https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png',
       previewUrl: 'https://example.com/preview12',
+      genre: 'Pop',
     ),
     MusicModel(
       id: 'm13',
@@ -98,6 +110,7 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36',
       previewUrl: 'https://example.com/preview13',
+      genre: 'R&B',
     ),
     MusicModel(
       id: 'm14',
@@ -106,6 +119,7 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36',
       previewUrl: 'https://example.com/preview14',
+      genre: 'Pop',
     ),    MusicModel(
       id: 'm15',
       title: 'Stairway to Heaven',
@@ -113,6 +127,7 @@ class MockData {
       albumArt:
           'https://upload.wikimedia.org/wikipedia/en/2/26/Led_Zeppelin_-_Led_Zeppelin_IV.jpg',
       previewUrl: 'https://example.com/preview15',
+      genre: 'Rock',
     ),
     MusicModel(
       id: 'm16',
@@ -121,6 +136,7 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b273a935e4689f15953311772cc4',
       previewUrl: 'https://example.com/preview16',
+      genre: 'Pop',
     ),
     MusicModel(
       id: 'm17',
@@ -129,6 +145,7 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b2734ae1c4c5c45aabe565499163',
       previewUrl: 'https://example.com/preview17',
+      genre: 'Indie',
     ),    MusicModel(
       id: 'm18',
       title: 'Flowers',
@@ -136,6 +153,7 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b273f429549123dbe8552764ba1d',
       previewUrl: 'https://example.com/preview18',
+      genre: 'Pop',
     ),
     MusicModel(
       id: 'm19',
@@ -144,6 +162,7 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b273a048415db06a5b6fa7ec4e1a',
       previewUrl: 'https://example.com/preview19',
+      genre: 'Electronic',
     ),
     MusicModel(
       id: 'm20',
@@ -152,6 +171,7 @@ class MockData {
       albumArt:
           'https://i.scdn.co/image/ab67616d0000b273a048415db06a5b6fa7ec4e1a',
       previewUrl: 'https://example.com/preview20',
+      genre: 'R&B',
     ),
   ];
 
@@ -219,13 +239,19 @@ class MockData {
       profilePicture: 'https://randomuser.me/api/portraits/men/28.jpg',
       topMusicIds: ['m12', 'm19', 'm7'],
       friendIds: ['u6', 'u8', 'u10'],
-    ),
-    UserModel(
+    ),    UserModel(
       id: 'u10',
       username: 'indieLover',
       profilePicture: 'https://randomuser.me/api/portraits/women/56.jpg',
       topMusicIds: ['m18', 'm17', 'm15'],
       friendIds: ['u6', 'u9'],
+    ),
+    UserModel(
+      id: 'u11',
+      username: 'musicExplorer',
+      profilePicture: 'https://randomuser.me/api/portraits/men/67.jpg',
+      topMusicIds: ['m2', 'm4', 'm8'], // Ed Sheeran, Pharrell Williams, Luis Fonsi
+      friendIds: ['u1', 'u5', 'u7'],
     ),
   ];
 

@@ -60,12 +60,11 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            
-            // Titre
+              // Titre
             Text(
               'Sélectionner une musique pour la ${_getPositionText(slotIndex + 1)} place',
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -248,14 +247,13 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
       ],
     );
   }
-
   Widget _buildEmptyContent() {
     return const Center(
       child: Text(
         'Ajouter une musique',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -299,13 +297,12 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Titre principal
+              children: [                // Titre principal
                 const Center(
                   child: Text(
                     'Création du top 3',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),

@@ -91,12 +91,64 @@ class MockDataService {
           music.artist.toLowerCase().contains(lowercaseQuery);
     }).toList();
   }
-
   // Rechercher des utilisateurs par nom d'utilisateur
   List<UserModel> searchUsers(String query) {
     final String lowercaseQuery = query.toLowerCase();
     return _users.where((user) {
       return user.username.toLowerCase().contains(lowercaseQuery);
     }).toList();
+  }
+  // Get popular genres statistics
+  Map<String, int> getPopularGenres() {
+    Map<String, int> genreCounts = {};
+
+    for (var user in _users) {
+      for (var musicId in user.topMusicIds) {
+        final music = getMusicById(musicId);
+        final genre = music.genre ?? 'Unknown';
+        genreCounts[genre] = (genreCounts[genre] ?? 0) + 1;
+      }
+    }
+
+    // Convert to sorted map (keeping only top 5)
+    final entries = genreCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    
+    return Map.fromEntries(entries.take(5));
+  }
+
+  // Get popular artists statistics
+  Map<String, int> getPopularArtists() {
+    Map<String, int> artistCounts = {};
+
+    for (var user in _users) {
+      for (var musicId in user.topMusicIds) {
+        final music = getMusicById(musicId);
+        artistCounts[music.artist] = (artistCounts[music.artist] ?? 0) + 1;
+      }
+    }
+
+    // Convert to sorted map (keeping only top 5)
+    final entries = artistCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    
+    return Map.fromEntries(entries.take(5));
+  }
+
+  // Get top 10 community tracks
+  List<MusicModel> getTop10PopularTracks() {
+    Map<String, int> trackCounts = {};
+
+    for (var user in _users) {
+      for (var musicId in user.topMusicIds) {
+        trackCounts[musicId] = (trackCounts[musicId] ?? 0) + 1;
+      }
+    }
+
+    // Sort tracks by popularity and get top 10
+    List<String> sortedMusicIds = trackCounts.keys.toList()
+      ..sort((a, b) => (trackCounts[b] ?? 0).compareTo(trackCounts[a] ?? 0));
+
+    return sortedMusicIds.take(10).map((id) => getMusicById(id)).toList();
   }
 }

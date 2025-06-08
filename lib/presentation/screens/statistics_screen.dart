@@ -3,61 +3,124 @@ import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/music_model.dart';
 import '../../core/widgets/music_card.dart';
 import '../../core/widgets/glass_container.dart';
+import '../../core/widgets/vertical_bar_chart.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
   @override
   Widget build(BuildContext context) {
     final MockDataService dataService = MockDataService();
-    final List<MusicModel> communityTracks =
-        dataService.getCommunityTopTracks();
+    final Map<String, int> popularGenres = dataService.getPopularGenres();
+    final Map<String, int> popularArtists = dataService.getPopularArtists();
+    final List<MusicModel> top10Tracks = dataService.getTop10PopularTracks();
+
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: _buildCommunityTracks(context, communityTracks),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: GlassContainer(
+          blur: 10,
+          opacity: 0.25,
+          borderRadius: BorderRadius.circular(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Genres Chart
+              _buildChartSection(
+                context,
+                title: 'Genres les plus populaires',
+                chart: VerticalBarChart(
+                  data: popularGenres,
+                  title: 'Genres',
+                  height: 250,
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              // Artists Chart
+              _buildChartSection(
+                context,
+                title: 'Artistes du moment',
+                chart: VerticalBarChart(
+                  data: popularArtists,
+                  title: 'Artistes',
+                  height: 250,
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              // Top 10 Tracks
+              _buildTopTracksSection(context, top10Tracks),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildCommunityTracks(
-      BuildContext context, List<MusicModel> communityTracks) {
-    if (communityTracks.isEmpty) {
-      return _buildEmptyState(
-          'No community tracks yet', 'Be the first to share your favorites!');
-    }
+  Widget _buildChartSection(BuildContext context, {required String title, required Widget chart}) {
     return Column(
-      children: [
-        Padding(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [        Padding(
           padding: const EdgeInsets.all(16),
           child: Text(
-            'Trending in the Community',
-            style: Theme.of(context).textTheme.titleLarge,
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
-        Expanded(
-          child: GlassContainer(
-            blur: 10,
-            opacity: 0.25,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
+        chart,
+      ],
+    );
+  }
+
+  Widget _buildTopTracksSection(BuildContext context, List<MusicModel> topTracks) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            'Musiques du moment',
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        if (topTracks.isEmpty)
+          _buildEmptyState('Aucune musique populaire', 'Soyez le premier à partager vos favoris !')
+        else
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: communityTracks.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: topTracks.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: MusicCard(
-                    music: communityTracks[index],
+                    music: topTracks[index],
                     rank: index + 1,
                   ),
                 );
               },
             ),
           ),
-        ),
       ],
     );
   }
 
   Widget _buildEmptyState(String title, String subtitle) {
-    return Center(
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(32),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -69,7 +132,11 @@ class StatisticsScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             title,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
