@@ -132,20 +132,20 @@ class _FriendsScreenState extends State<FriendsScreen> {
               // Friend header
               ListTile(
                 contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                leading: CircleAvatar(
-                  radius: 28, // Taille augmentée (par défaut c'était ~20)
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 8),                leading: CircleAvatar(
+                  radius: 24, // Taille réduite de 28 à 24
                   backgroundImage: NetworkImage(friend.profilePicture),
-                ),
-                title: Text(
+                ),title: Text(
                   friend.username,
                   style: const TextStyle(
-                    fontSize: 18, // Taille de police augmentée
+                    fontSize: 16, // Taille réduite de 18 à 16px
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 subtitle: Text(
-                    '${20 - index}/05/2025'), // Date simulée différente pour chaque ami
+                  '${20 - index}/05/2025', // Date simulée différente pour chaque ami
+                  style: const TextStyle(fontSize: 14),
+                ),
               ),
 
               // Friend's top 3 music

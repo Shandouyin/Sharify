@@ -151,4 +151,39 @@ class MockDataService {
 
     return sortedMusicIds.take(10).map((id) => getMusicById(id)).toList();
   }
+
+  // Get user-specific genre statistics
+  Map<String, int> getUserGenres(String userId) {
+    Map<String, int> genreCounts = {};
+    
+    final user = getUserById(userId);
+    for (var musicId in user.topMusicIds) {
+      final music = getMusicById(musicId);
+      final genre = music.genre ?? 'Unknown';
+      genreCounts[genre] = (genreCounts[genre] ?? 0) + 1;
+    }
+    
+    // Convert to sorted map (keeping only top 5)
+    final entries = genreCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    
+    return Map.fromEntries(entries.take(5));
+  }
+
+  // Get user-specific artist statistics
+  Map<String, int> getUserArtists(String userId) {
+    Map<String, int> artistCounts = {};
+    
+    final user = getUserById(userId);
+    for (var musicId in user.topMusicIds) {
+      final music = getMusicById(musicId);
+      artistCounts[music.artist] = (artistCounts[music.artist] ?? 0) + 1;
+    }
+    
+    // Convert to sorted map (keeping only top 5)
+    final entries = artistCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    
+    return Map.fromEntries(entries.take(5));
+  }
 }

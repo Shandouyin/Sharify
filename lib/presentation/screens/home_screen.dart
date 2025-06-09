@@ -158,17 +158,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 leading: CircleAvatar(
-                  radius: 28,
+                  radius: 24,
                   backgroundImage: NetworkImage(user.profilePicture),
-                ),
-                title: Text(
+                ),                title: Text(
                   user.username,
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                subtitle: Text('${20 - index % 15}/05/2025'), // Date simulée
+                subtitle: Text(
+                  '${20 - index % 15}/05/2025', // Date simulée
+                  style: const TextStyle(fontSize: 14),
+                ),
                 trailing: SizedBox(
                   width: 110, // Largeur fixe pour le bouton
                   height: 40, // Hauteur fixe pour le bouton

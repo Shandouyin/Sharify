@@ -319,22 +319,25 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
                 
                 const SizedBox(height: 30),                  // Boutons d'action
                 Row(
-                  children: [
-                    // Bouton "Récupérer dernier top 3"
+                  children: [                    // Bouton "Récupérer dernier top 3"
                     Expanded(
                       child: SizedBox(
-                        height: 50,
+                        height: 48,
                         child: ElevatedButton(
                           child: const Text(
                             'Récupérer dernier top 3',
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: customButtonColor,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            alignment: Alignment.center,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                           onPressed: loadLastTop3,
                         ),
@@ -342,21 +345,24 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
                     ),
                     
                     const SizedBox(width: 16),
-                    
-                    // Bouton "Publier"
+                      // Bouton "Publier"
                     Expanded(
                       child: SizedBox(
-                        height: 50,
+                        height: 48,
                         child: ElevatedButton(
                           child: const Text(
                             'Publier',
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: customButtonColor,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            alignment: Alignment.center,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                           onPressed: publishTop3,
                         ),
