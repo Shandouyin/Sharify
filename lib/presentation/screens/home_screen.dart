@@ -170,23 +170,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 subtitle: Text(
                   '${20 - index % 15}/05/2025', // Date simulée
                   style: const TextStyle(fontSize: 14),
-                ),
-                trailing: SizedBox(
-                  width: 110, // Largeur fixe pour le bouton
-                  height: 40, // Hauteur fixe pour le bouton
+                ),                trailing: SizedBox(
+                  width: 90, // Largeur réduite
+                  height: 36, // Hauteur réduite
                   child: ElevatedButton.icon(
                     icon: Icon(isFollowing ? Icons.check : Icons.person_add,
-                        size: 18),
+                        size: 16), // Icône plus petite
                     label: Text(
                       isFollowing ? 'Suivi(e)' : 'Suivre',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontSize: 12), // Texte plus petit
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           isFollowing ? Colors.grey : customButtonColor,
                       foregroundColor: Colors.white,
                       padding: EdgeInsets.zero,
-                      fixedSize: const Size(110, 40),
+                      fixedSize: const Size(90, 36), // Taille fixe réduite
                       alignment: Alignment.center,
                     ),
                     onPressed: () {

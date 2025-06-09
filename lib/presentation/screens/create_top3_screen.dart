@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/widgets/glass_container.dart';
-import '../../core/widgets/music_card.dart';
+import '../../core/widgets/music_selection_modal.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/music_model.dart';
 
@@ -30,76 +30,22 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
     super.initState();
     allMusic = dataService.getAllMusic();
   }
-  
-  void selectMusicForSlot(int slotIndex) {
+    void selectMusicForSlot(int slotIndex) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _buildMusicSelectionSheet(slotIndex),
-    );
-  }
-  
-  Widget _buildMusicSelectionSheet(int slotIndex) {
-    return GlassContainer(
-      blur: 10,
-      opacity: 0.9,
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.8,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Handle bar
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                color: Colors.grey[600],
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-              // Titre
-            Text(
-              'Sélectionner une musique pour la ${_getPositionText(slotIndex + 1)} place',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 20),
-            
-            // Liste des musiques
-            Expanded(
-              child: ListView.builder(
-                itemCount: allMusic.length,
-                itemBuilder: (context, index) {
-                  final music = allMusic[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: MusicCard(
-                      music: music,
-                      rank: 0, // Pas de rang spécifique dans la liste de sélection
-                      backgroundColor: Colors.grey.withAlpha(64),
-                      onTap: () {
-                        setState(() {
-                          selectedMusic[slotIndex] = music;
-                        });
-                        Navigator.pop(context);
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+      builder: (context) => MusicSelectionModal(
+        musicList: allMusic,
+        title: 'Sélectionner une musique pour la ${_getPositionText(slotIndex + 1)} place',
+        onMusicSelected: (music) {
+          setState(() {
+            selectedMusic[slotIndex] = music;
+          });
+        },
       ),
     );
-  }
-  
+  }  
   String _getPositionText(int position) {
     switch (position) {
       case 1:

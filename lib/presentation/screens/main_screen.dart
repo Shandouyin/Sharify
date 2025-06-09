@@ -5,6 +5,7 @@ import 'statistics_screen.dart';
 import 'profile_screen.dart';
 import 'create_top3_screen.dart';
 import '../../core/widgets/background_container.dart';
+import '../../core/widgets/global_search_modal.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -44,17 +45,24 @@ class _MainScreenState extends State<MainScreen> {
     ];    return Scaffold(
       appBar: AppBar(
         title: Text(titles[_selectedIndex]),
-        backgroundColor: Colors.black,
-        scrolledUnderElevation:
+        backgroundColor: Colors.black,        scrolledUnderElevation:
             0, // Désactive l'effet d'élévation lors du défilement
         elevation: 0, // Supprime l'ombre
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: Implement search
-            },
-          ),
+          // Afficher la barre de recherche seulement sur l'accueil (index 0) et amis (index 1)
+          if (_selectedIndex == 0 || _selectedIndex == 1)
+            IconButton(
+              icon: const Icon(Icons.search),              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  enableDrag: false, // Empêche le drag qui cause le mouvement du background
+                  isDismissible: true, // Permet de fermer en tapant à côté
+                  builder: (context) => const GlobalSearchModal(),
+                );
+              },
+            ),
         ],
       ),
       body: BackgroundContainer(

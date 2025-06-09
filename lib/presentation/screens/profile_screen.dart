@@ -169,12 +169,8 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   
                   const SizedBox(height: 20),
-                    
-                  // Charts section
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: _buildChartsSection(context, currentUser),
-                  ),
+                      // Charts section
+                  _buildChartsSection(context, currentUser),
                 ],
             ),
         ),
@@ -480,15 +476,14 @@ class ProfileScreen extends StatelessWidget {
     final Map<String, int> userArtists = dataService.getUserArtists(user.id);
 
     return Column(
-      children: [
-        // Graphique des genres
+      children: [        // Graphique des genres
         _buildChartSection(
           context,
           title: 'Genres les plus écoutés',
           chart: VerticalBarChart(
             data: userGenres,
             title: 'Genres',
-            height: 200,
+            height: 250,
           ),
         ),
 
@@ -501,27 +496,27 @@ class ProfileScreen extends StatelessWidget {
           chart: VerticalBarChart(
             data: userArtists,
             title: 'Artistes',
-            height: 200,
+            height: 250,
           ),
         ),
       ],
     );
-  }
-
-  // Widget pour construire une section de graphique
+  }  // Widget pour construire une section de graphique
   Widget _buildChartSection(BuildContext context, {required String title, required Widget chart}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
-        const SizedBox(height: 16),
         chart,
       ],
     );
