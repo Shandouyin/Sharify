@@ -52,15 +52,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       userTopMusic = lastTop3.musicIds
           .map((id) => dataService.getMusicById(id))
           .toList();
-    }
-
-    return Scaffold(
+    }    return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Profil de ${targetUser.username}'),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
+        scrolledUnderElevation: 0, // Désactive l'effet d'élévation lors du défilement
       ),
       body: BackgroundContainer(
         child: SingleChildScrollView(

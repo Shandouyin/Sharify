@@ -344,8 +344,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return BackgroundContainer(
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
+        backgroundColor: Colors.transparent,        appBar: AppBar(
           title: const Text(
             'Modifier le profil',
             style: TextStyle(color: Colors.white),
@@ -353,6 +352,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           backgroundColor: Colors.black,
           foregroundColor: Colors.white,
           elevation: 0,
+          scrolledUnderElevation: 0, // Désactive l'effet d'élévation lors du défilement
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),

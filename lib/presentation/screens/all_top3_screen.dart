@@ -19,15 +19,14 @@ class AllTop3Screen extends StatelessWidget {
         : dataService.currentUser;
     
     // Récupérer les Top3 spécifiques à l'utilisateur
-    final List<Top3Model> userTop3s = dataService.getTop3sForUser(targetUser.id);
-
-    return Scaffold(
+    final List<Top3Model> userTop3s = dataService.getTop3sForUser(targetUser.id);    return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Top 3 de ${targetUser.username}'),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
+        scrolledUnderElevation: 0, // Désactive l'effet d'élévation lors du défilement
       ),
       body: BackgroundContainer(
         child: Padding(
