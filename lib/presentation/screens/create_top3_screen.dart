@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/music_selection_modal.dart';
 import '../../core/widgets/custom_snack_bar.dart';
+import '../../core/services/audio_player_service.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/music_model.dart';
 
@@ -209,17 +211,31 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
               ),
             ],
           ),
-        ),
-        
-        // Play button
-        IconButton(
-          icon: Icon(
-            Icons.play_circle_filled,
-            color: _getButtonColorForRank(rank),
-            size: 42,
-          ),          onPressed: () {            CustomSnackBar.showInfo(
-              context,
-              message: 'Lecture de la prévisualisation',
+        ),        // Play button
+        Consumer<AudioPlayerService>(
+          builder: (context, audioService, child) {
+            final isCurrentMusic = audioService.isMusicLoaded(music);
+            final isPlaying = audioService.isPlayingMusic(music);
+            final isLoading = audioService.isLoading && 
+                (audioService.currentMusic?.id == music.id || audioService.currentMusic == null);
+
+            return IconButton(
+              icon: Icon(
+                isLoading 
+                    ? Icons.hourglass_empty
+                    : isPlaying 
+                        ? Icons.pause_circle_filled
+                        : Icons.play_circle_filled,
+                color: _getButtonColorForRank(rank),
+                size: 42,
+              ),
+              onPressed: isLoading ? null : () async {
+                if (isCurrentMusic) {
+                  await audioService.togglePlayPause();
+                } else {
+                  await audioService.playMusic(music);
+                }
+              },
             );
           },
         ),

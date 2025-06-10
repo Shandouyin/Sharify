@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../data/models/music_model.dart';
-import 'custom_snack_bar.dart';
+import '../services/audio_player_service.dart';
 
 class MusicCard extends StatelessWidget {
   final MusicModel music;
@@ -96,18 +97,31 @@ class MusicCard extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-              // Play button
-            IconButton(
-              icon: Icon(
-                Icons.play_circle_filled, 
-                color: getButtonColor(),
-                size: 42,
-              ),              onPressed: () {
-                // Play preview implementation
-                CustomSnackBar.showInfo(
-                  context,
-                  message: 'Lecture de la prévisualisation',
+            ),              // Play button
+            Consumer<AudioPlayerService>(
+              builder: (context, audioService, child) {
+                final isCurrentMusic = audioService.isMusicLoaded(music);
+                final isPlaying = audioService.isPlayingMusic(music);
+                final isLoading = audioService.isLoading && 
+                    (audioService.currentMusic?.id == music.id || audioService.currentMusic == null);
+
+                return IconButton(
+                  icon: Icon(
+                    isLoading 
+                        ? Icons.hourglass_empty
+                        : isPlaying 
+                            ? Icons.pause_circle_filled
+                            : Icons.play_circle_filled,
+                    color: getButtonColor(),
+                    size: 42,
+                  ),
+                  onPressed: isLoading ? null : () async {
+                    if (isCurrentMusic) {
+                      await audioService.togglePlayPause();
+                    } else {
+                      await audioService.playMusic(music);
+                    }
+                  },
                 );
               },
             ),
@@ -176,18 +190,31 @@ class MusicCard extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-              // Play button
-            IconButton(
-              icon: Icon(
-                Icons.play_circle_filled, 
-                color: getButtonColor(),
-                size: 42,
-              ),              onPressed: () {
-                // Play preview implementation
-                CustomSnackBar.showInfo(
-                  context,
-                  message: 'Lecture de la prévisualisation',
+            ),              // Play button
+            Consumer<AudioPlayerService>(
+              builder: (context, audioService, child) {
+                final isCurrentMusic = audioService.isMusicLoaded(music);
+                final isPlaying = audioService.isPlayingMusic(music);
+                final isLoading = audioService.isLoading && 
+                    (audioService.currentMusic?.id == music.id || audioService.currentMusic == null);
+
+                return IconButton(
+                  icon: Icon(
+                    isLoading 
+                        ? Icons.hourglass_empty
+                        : isPlaying 
+                            ? Icons.pause_circle_filled
+                            : Icons.play_circle_filled,
+                    color: getButtonColor(),
+                    size: 42,
+                  ),
+                  onPressed: isLoading ? null : () async {
+                    if (isCurrentMusic) {
+                      await audioService.togglePlayPause();
+                    } else {
+                      await audioService.playMusic(music);
+                    }
+                  },
                 );
               },
             ),

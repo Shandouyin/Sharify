@@ -191,159 +191,158 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
             ),
           ),
 
-          const SizedBox(height: 16),
-
-          // Contenu des onglets
+          const SizedBox(height: 16),          // Contenu des onglets
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                // Onglet Musiques
-                _buildMusicTab(),
-                // Onglet Utilisateurs
-                _buildUsersTab(),
-              ],
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // Onglet Musiques
+                  _buildMusicTab(),
+                  // Onglet Utilisateurs
+                  _buildUsersTab(),
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
-  }
-
-  Widget _buildMusicTab() {
-    if (filteredMusic.isEmpty) {
-      return Center(
-        child: Text(
-          'Aucune musique trouvée',
-          style: TextStyle(
-            color: Colors.grey[400],
-            fontSize: 16,
-          ),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: filteredMusic.length,
-      itemBuilder: (context, index) {
-        final music = filteredMusic[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: MusicCard(
-            music: music,
-            rank: 0,
-            backgroundColor: Colors.grey.withAlpha(64),
-            onTap: () {
-              // Optionnel: Action au tap sur une musique
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Sélectionné: ${music.title}'),
-                  duration: const Duration(seconds: 1),
+  }  Widget _buildMusicTab() {
+    return filteredMusic.isEmpty
+        ? const Center(
+            child: Text(
+              'Aucune musique trouvée',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 16,
+              ),
+            ),
+          )
+        : ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: filteredMusic.length,
+            itemBuilder: (context, index) {
+              final music = filteredMusic[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: MusicCard(
+                  music: music,
+                  rank: 0,
+                  backgroundColor: Colors.grey.withAlpha(64),
+                  onTap: () {
+                    // Optionnel: Action au tap sur une musique
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Sélectionné: ${music.title}'),
+                        duration: const Duration(seconds: 1),
+                      ),
+                    );
+                  },
                 ),
               );
             },
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildUsersTab() {
-    if (filteredUsers.isEmpty) {
-      return Center(
-        child: Text(
-          'Aucun utilisateur trouvé',
-          style: TextStyle(
-            color: Colors.grey[400],
-            fontSize: 16,
-          ),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: filteredUsers.length,
-      itemBuilder: (context, index) {
-        final user = filteredUsers[index];
-        final isFollowing = followStatus[user.id] ?? false;
-          return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/user-profile', arguments: user.id);
-            },
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey.withAlpha(64),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [                  // Photo de profil
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(25),
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: Image.network(
-                        user.profilePicture,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Icon(Icons.person, size: 30),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                
-                const SizedBox(width: 16),
-                
-                // Infos utilisateur
-                Expanded(
-                  child: Text(
-                    user.username,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),                // Bouton Suivre - même taille que dans home_screen
-                SizedBox(
-                  width: 90,
-                  height: 36,
-                  child: ElevatedButton.icon(
-                    icon: Icon(isFollowing ? Icons.check : Icons.person_add,
-                        size: 16),
-                    label: Text(
-                      isFollowing ? 'Suivi(e)' : 'Suivre',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    onPressed: () => _toggleFollow(user.id),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isFollowing 
-                          ? Colors.grey[700] 
-                          : const Color(0xFF0F7ACC),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      padding: EdgeInsets.zero,
-                      fixedSize: const Size(90, 36),
-                      alignment: Alignment.center,
-                    ),
-                  ),                ),
-                ],
+          );
+  }  Widget _buildUsersTab() {
+    return filteredUsers.isEmpty
+        ? const Center(
+            child: Text(
+              'Aucun utilisateur trouvé',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 16,
               ),
             ),
-          ),
-        );
-      },
-    );
+          )
+        : ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: filteredUsers.length,
+            itemBuilder: (context, index) {
+              final user = filteredUsers[index];
+              final isFollowing = followStatus[user.id] ?? false;
+              
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/user-profile', arguments: user.id);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withAlpha(64),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        // Photo de profil
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(25),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Image.network(
+                              user.profilePicture,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey[300],
+                                  child: const Icon(Icons.person, size: 30),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      
+                        const SizedBox(width: 16),
+                        
+                        // Infos utilisateur
+                        Expanded(
+                          child: Text(
+                            user.username,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        
+                        // Bouton Suivre
+                        SizedBox(
+                          width: 90,
+                          height: 36,
+                          child: ElevatedButton.icon(
+                            icon: Icon(isFollowing ? Icons.check : Icons.person_add, size: 16),
+                            label: Text(
+                              isFollowing ? 'Suivi(e)' : 'Suivre',
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            onPressed: () => _toggleFollow(user.id),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isFollowing 
+                                  ? Colors.grey[700] 
+                                  : const Color(0xFF0F7ACC),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              padding: EdgeInsets.zero,
+                              fixedSize: const Size(90, 36),
+                              alignment: Alignment.center,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
   }
 }

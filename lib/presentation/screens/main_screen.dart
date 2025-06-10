@@ -6,6 +6,7 @@ import 'profile_screen.dart';
 import 'create_top3_screen.dart';
 import '../../core/widgets/background_container.dart';
 import '../../core/widgets/global_search_modal.dart';
+import '../../core/widgets/mini_player.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -55,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
                   context: context,
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
-                  enableDrag: false, // Empêche le drag qui cause le mouvement du background
+                  enableDrag: true, // Permet le drag-to-dismiss
                   isDismissible: true, // Permet de fermer en tapant à côté
                   builder: (context) => const GlobalSearchModal(),
                 );
@@ -67,26 +68,35 @@ class _MainScreenState extends State<MainScreen> {
         child: _screens[_selectedIndex],
       ),
       extendBody: true, // Pour permettre au contenu d'aller sous la navbar
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
-        child: Container(
-          height: 60,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius:
-                BorderRadius.circular(30), // Plus grand rayon pour plus d'arc
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Mini-lecteur au-dessus de la barre de navigation
+          const MiniPlayer(),
+          
+          // Barre de navigation existante
+          Padding(
+            padding: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
+            child: Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius:
+                    BorderRadius.circular(30), // Plus grand rayon pour plus d'arc
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildNavItem(Icons.home, 'Accueil', 0),
+                  _buildNavItem(Icons.people, 'Ami(e)s', 1),
+                  _buildNavItem(Icons.add_circle, '', 2, size: 34),
+                  _buildNavItem(Icons.bar_chart, 'Statistiques', 3),
+                  _buildNavItem(Icons.person, 'Profil', 4),
+                ],
+              ),
+            ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildNavItem(Icons.home, 'Accueil', 0),
-              _buildNavItem(Icons.people, 'Ami(e)s', 1),
-              _buildNavItem(Icons.add_circle, '', 2, size: 34),
-              _buildNavItem(Icons.bar_chart, 'Statistiques', 3),
-              _buildNavItem(Icons.person, 'Profil', 4),
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }
