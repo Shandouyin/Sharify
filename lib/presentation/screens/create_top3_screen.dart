@@ -166,10 +166,9 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
               height: 80,
               decoration: BoxDecoration(
                 color: music != null ? _getRankColor(index).withAlpha(128) : Colors.grey.withAlpha(128),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
+                borderRadius: BorderRadius.circular(12),                boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -184,9 +183,8 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
             height: 80,
             decoration: BoxDecoration(
               color: Colors.grey.withAlpha(32),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(12),              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
                 width: 2,
                 style: BorderStyle.solid,
               ),
@@ -287,10 +285,9 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
         ),
           // Drag handle icon
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Icon(
+          padding: const EdgeInsets.symmetric(horizontal: 8),          child: Icon(
             Icons.drag_indicator,
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
             size: 20,
           ),
         ),
