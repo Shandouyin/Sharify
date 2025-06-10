@@ -398,10 +398,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-          ),
-        ),
+          ),        ),
         if (topMusic.isEmpty)
-          Container(
+          SizedBox(
             width: double.infinity,
             child: const Column(
               children: [
@@ -466,10 +465,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-          ),
-        ),
+          ),        ),
         if (favoriteMusic == null)
-          Container(
+          SizedBox(
             width: double.infinity,
             child: const Column(
               children: [

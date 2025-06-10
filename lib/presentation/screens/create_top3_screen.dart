@@ -66,10 +66,9 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
       final List<MusicModel> musics = lastTop3.musicIds
           .map((id) => dataService.getMusicById(id))
           .toList();
-      
-      setState(() {
+        setState(() {
         selectedMusic = [
-          musics.length > 0 ? musics[0] : null,
+          musics.isNotEmpty ? musics[0] : null,
           musics.length > 1 ? musics[1] : null,
           musics.length > 2 ? musics[2] : null,
         ];
@@ -302,16 +301,7 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
                   children: [                    // Bouton "Récupérer dernier top 3"
                     Expanded(
                       child: SizedBox(
-                        height: 48,
-                        child: ElevatedButton(
-                          child: const Text(
-                            'Récupérer dernier top 3',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                        height: 48,                        child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: customButtonColor,
                             foregroundColor: Colors.white,
@@ -320,6 +310,14 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
                             ),
                           ),
                           onPressed: loadLastTop3,
+                          child: const Text(
+                            'Récupérer dernier top 3',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ),
@@ -328,15 +326,7 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
                       // Bouton "Publier"
                     Expanded(
                       child: SizedBox(
-                        height: 48,
-                        child: ElevatedButton(
-                          child: const Text(
-                            'Publier',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                        height: 48,                        child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: customButtonColor,
                             foregroundColor: Colors.white,
@@ -345,6 +335,13 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
                             ),
                           ),
                           onPressed: publishTop3,
+                          child: const Text(
+                            'Publier',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ),
                     ),

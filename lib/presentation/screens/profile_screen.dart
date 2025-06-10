@@ -41,11 +41,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .map((id) => dataService.getMusicById(id))
           .toList();
     }
-  }
-  void _refreshUserData() {
+  }  void _refreshUserData() {
     setState(() {
       _loadUserData();
     });
+  }
+
+  void _handleEditProfileResult(dynamic result) {
+    if (result == true && mounted) {
+      // Rafraîchir les données utilisateur
+      _refreshUserData();
+      // Afficher un message de succès
+      CustomSnackBar.showSuccess(
+        context,
+        message: 'Profil mis à jour avec succès',
+      );
+    }
   }
 
   Widget _buildProfileImage(String imagePath) {
@@ -163,17 +174,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Bouton "Modifier"
                       Expanded(
                         child: SizedBox(
-                          height: 40,                          child: ElevatedButton(
-                            onPressed: () async {
+                          height: 40,                          child: ElevatedButton(                            onPressed: () async {
                               final result = await Navigator.pushNamed(context, '/edit-profile');
-                              if (result == true) {
-                                // Rafraîchir les données utilisateur
-                                _refreshUserData();                                // Afficher un message de succès
-                                CustomSnackBar.showSuccess(
-                                  context,
-                                  message: 'Profil mis à jour avec succès',
-                                );
-                              }
+                              _handleEditProfileResult(result);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: customButtonColor,
@@ -404,10 +407,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-          ),
-        ),
+          ),        ),
         if (topMusic.isEmpty)
-          Container(
+          SizedBox(
             width: double.infinity,
             child: const Column(
               children: [
@@ -471,10 +473,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-          ),
-        ),
+          ),        ),
         if (favoriteMusic == null)
-          Container(
+          SizedBox(
             width: double.infinity,
             child: const Column(
               children: [

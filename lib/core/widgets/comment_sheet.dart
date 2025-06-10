@@ -65,10 +65,9 @@ class _CommentSheetState extends State<CommentSheet> {
     if (isLocalFile && imagePath.isNotEmpty) {
       return Container(
         width: radius * 2,
-        height: radius * 2,
-        decoration: BoxDecoration(
+        height: radius * 2,        decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(radius),

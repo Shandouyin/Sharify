@@ -50,14 +50,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         setState(() {
           _selectedImagePath = image.path;
         });
+      }    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erreur lors de la sélection de l\'image: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erreur lors de la sélection de l\'image: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
     }
   }
 
@@ -74,14 +75,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         setState(() {
           _selectedImagePath = image.path;
         });
+      }    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erreur lors de la prise de photo: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erreur lors de la prise de photo: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
     }
   }
 
@@ -175,22 +177,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     try {
       // Simuler une sauvegarde
-      await Future.delayed(const Duration(seconds: 1));
-        // Mettre à jour les données (simulé)
+      await Future.delayed(const Duration(seconds: 1));      // Mettre à jour les données (simulé)
       dataService.updateUserProfile(
         currentUser.id,
         _usernameController.text.trim(),
         _selectedImagePath,
       );
 
-      Navigator.pop(context, true); // Retourner true pour indiquer que le profil a été modifié
+      if (mounted) {
+        Navigator.pop(context, true); // Retourner true pour indiquer que le profil a été modifié
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erreur lors de la sauvegarde: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erreur lors de la sauvegarde: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
       setState(() {
         _isLoading = false;
@@ -263,10 +268,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           controller: _usernameController,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            hintText: 'Entrez votre nom d\'utilisateur',
-            hintStyle: const TextStyle(color: Colors.white54),
+            hintText: 'Entrez votre nom d\'utilisateur',            hintStyle: const TextStyle(color: Colors.white54),
             filled: true,
-            fillColor: Colors.white.withOpacity(0.1),
+            fillColor: Colors.white.withValues(alpha: 0.1),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
