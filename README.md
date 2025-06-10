@@ -1,4 +1,4 @@
-# music_app
+# Sharify
 
 A new Flutter project.
 
