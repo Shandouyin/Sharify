@@ -33,7 +33,17 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
     super.initState();
     allMusic = dataService.getAllMusic();
   }
-    void selectMusicForSlot(int slotIndex) {
+    void _swapMusic(int fromIndex, int toIndex) {
+    if (fromIndex != toIndex) {
+      setState(() {
+        final temp = selectedMusic[fromIndex];
+        selectedMusic[fromIndex] = selectedMusic[toIndex];
+        selectedMusic[toIndex] = temp;
+      });
+    }
+  }
+  
+  void selectMusicForSlot(int slotIndex) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -142,20 +152,83 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
   }  Widget _buildMusicSlot(int index) {
     final music = selectedMusic[index];
     
-    return GestureDetector(
-      onTap: () => selectMusicForSlot(index),      child: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: music != null ? _getRankColor(index).withAlpha(64) : Colors.grey.withAlpha(64),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: music != null 
-          ? _buildMusicContent(music, index + 1)
-          : _buildEmptyContent(),
-      ),
+    return DragTarget<int>(
+      onAcceptWithDetails: (details) {
+        _swapMusic(details.data, index);
+      },
+      builder: (context, candidateData, rejectedData) {
+        return Draggable<int>(
+          data: index,
+          feedback: Material(
+            color: Colors.transparent,
+            child: Container(
+              width: MediaQuery.of(context).size.width - 72,
+              height: 80,
+              decoration: BoxDecoration(
+                color: music != null ? _getRankColor(index).withAlpha(128) : Colors.grey.withAlpha(128),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: music != null 
+                ? _buildMusicContent(music, index + 1)
+                : _buildEmptyContent(),
+            ),
+          ),
+          childWhenDragging: Container(
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.grey.withAlpha(32),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.3),
+                width: 2,
+                style: BorderStyle.solid,
+              ),
+            ),
+            child: const Center(
+              child: Text(
+                'Déplacer ici',
+                style: TextStyle(
+                  color: Colors.white54,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+          child: GestureDetector(
+            onTap: () => selectMusicForSlot(index),
+            child: Container(
+              height: 80,
+              decoration: BoxDecoration(
+                color: candidateData.isNotEmpty 
+                  ? _getRankColor(index).withAlpha(100)
+                  : music != null 
+                    ? _getRankColor(index).withAlpha(64) 
+                    : Colors.grey.withAlpha(64),
+                borderRadius: BorderRadius.circular(12),
+                border: candidateData.isNotEmpty 
+                  ? Border.all(
+                      color: _getRankColor(index),
+                      width: 2,
+                    )
+                  : null,
+              ),
+              child: music != null 
+                ? _buildMusicContent(music, index + 1)
+                : _buildEmptyContent(),
+            ),
+          ),
+        );
+      },
     );
   }
-
   Widget _buildMusicContent(MusicModel music, int rank) {
     return Row(
       children: [
@@ -211,7 +284,18 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
               ),
             ],
           ),
-        ),        // Play button
+        ),
+          // Drag handle icon
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Icon(
+            Icons.drag_indicator,
+            color: Colors.white.withOpacity(0.7),
+            size: 20,
+          ),
+        ),
+        
+        // Play button
         Consumer<AudioPlayerService>(
           builder: (context, audioService, child) {
             final isCurrentMusic = audioService.isMusicLoaded(music);
@@ -241,16 +325,34 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
         ),
       ],
     );
-  }
-  Widget _buildEmptyContent() {
+  }Widget _buildEmptyContent() {
     return const Center(
-      child: Text(
-        'Ajouter une musique',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.add_circle_outline,
+            color: Colors.white70,
+            size: 24,
+          ),
+          SizedBox(height: 4),
+          Text(
+            'Ajouter une musique',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            'ou glisser une musique ici',
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
       ),
     );
   }
