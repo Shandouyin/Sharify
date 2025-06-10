@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/models/music_model.dart';
+import 'custom_snack_bar.dart';
 
 class MusicCard extends StatelessWidget {
   final MusicModel music;
@@ -96,21 +97,17 @@ class MusicCard extends StatelessWidget {
                 ),
               ),
             ),
-            
-            // Play button
+              // Play button
             IconButton(
               icon: Icon(
                 Icons.play_circle_filled, 
                 color: getButtonColor(),
                 size: 42,
-              ),       
-              onPressed: () {
+              ),              onPressed: () {
                 // Play preview implementation
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Lecture de la prévisualisation'),
-                    duration: Duration(seconds: 2),
-                  ),
+                CustomSnackBar.showInfo(
+                  context,
+                  message: 'Lecture de la prévisualisation',
                 );
               },
             ),
@@ -180,21 +177,17 @@ class MusicCard extends StatelessWidget {
                 ),
               ),
             ),
-            
-            // Play button
+              // Play button
             IconButton(
               icon: Icon(
                 Icons.play_circle_filled, 
                 color: getButtonColor(),
                 size: 42,
-              ),       
-              onPressed: () {
+              ),              onPressed: () {
                 // Play preview implementation
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Lecture de la prévisualisation'),
-                    duration: Duration(seconds: 2),
-                  ),
+                CustomSnackBar.showInfo(
+                  context,
+                  message: 'Lecture de la prévisualisation',
                 );
               },
             ),

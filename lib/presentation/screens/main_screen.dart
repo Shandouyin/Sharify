@@ -41,10 +41,8 @@ class _MainScreenState extends State<MainScreen> {
       'Ami(e)s', // Friends
       'Création du Top 3', // Create Top 3
       'Statistiques',
-      'Profil',
-    ];    return Scaffold(
-      appBar: AppBar(
-        title: Text(titles[_selectedIndex]),
+      'Profil',    ];    return Scaffold(
+      appBar: AppBar(        title: Text(titles[_selectedIndex]),
         backgroundColor: Colors.black,        scrolledUnderElevation:
             0, // Désactive l'effet d'élévation lors du défilement
         elevation: 0, // Supprime l'ombre

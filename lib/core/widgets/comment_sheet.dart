@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'custom_snack_bar.dart';
+import '../../data/datasources/mock_data_service.dart';
 
 class CommentSheet extends StatefulWidget {
   final String username;
+  final String userId;
   final Function(int) onCommentAdded;
 
   const CommentSheet({
     super.key, 
     required this.username, 
+    required this.userId,
     required this.onCommentAdded,
   });
 
@@ -19,45 +24,26 @@ class _CommentSheetState extends State<CommentSheet> {
   Map<String, dynamic>? replyingTo;
   String replyHint = 'Ajouter un commentaire...';
   int commentCount = 0;
+    // Service de données pour générer des commentaires aléatoires
+  final MockDataService dataService = MockDataService();
   
-  // Liste de commentaires fictifs pour la démonstration
-  late List<Map<String, dynamic>> demoComments;
-
-  @override
+  // Liste de commentaires pour cette publication
+  late List<Map<String, dynamic>> demoComments;  @override
   void initState() {
     super.initState();
-    demoComments = [
-      {
-        'id': '1',
-        'author': 'Alice',
-        'text': 'J\'adore ton top 3 !',
-        'time': '2h',
-        'likes': 3,
-        'replies': []
-      },
-      {
-        'id': '2',
-        'author': 'Bob',
-        'text': 'Je ne connais pas le deuxième titre, tu recommandes ?',
-        'time': '1h',
-        'likes': 1,
-        'replies': [
-          {
-            'id': '3',
-            'author': widget.username,
-            'text': 'Absolument, c\'est un de mes préférés !',
-            'time': '45min',
-            'likes': 2
-          }
-        ]
-      }
-    ];
+    
+    // Obtenir les commentaires persistants pour cet utilisateur
+    demoComments = dataService.getCommentsForUser(widget.userId, widget.username);
     
     // Compter le nombre total de commentaires (incluant les réponses)
     commentCount = countAllComments();
+    
+    // Notifier le parent du nombre initial de commentaires
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onCommentAdded(commentCount);
+    });
   }
-  
-  // Compte le nombre total de commentaires incluant les réponses
+    // Compte le nombre total de commentaires incluant les réponses
   int countAllComments() {
     int count = demoComments.length;
     for (var comment in demoComments) {
@@ -66,6 +52,55 @@ class _CommentSheetState extends State<CommentSheet> {
       }
     }
     return count;
+  }
+
+  // Widget pour construire l'image de profil (même logique que ProfileScreen)
+  Widget _buildProfileImage(String imagePath, {double radius = 20}) {
+    // Check if it's a local file path or a network URL
+    bool isLocalFile = imagePath.startsWith('/') || 
+                      imagePath.contains('\\') || 
+                      imagePath.startsWith('file://') ||
+                      !imagePath.startsWith('http');
+
+    if (isLocalFile && imagePath.isNotEmpty) {
+      return Container(
+        width: radius * 2,
+        height: radius * 2,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(radius),
+          child: Image.file(
+            File(imagePath),
+            width: radius * 2,
+            height: radius * 2,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: radius * 2,
+                height: radius * 2,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey[300],
+                ),
+                child: Icon(Icons.person, size: radius * 0.8),
+              );
+            },
+          ),
+        ),
+      );
+    } else {
+      return CircleAvatar(
+        radius: radius,
+        backgroundImage: imagePath.isNotEmpty ? NetworkImage(imagePath) : null,
+        onBackgroundImageError: imagePath.isNotEmpty ? (exception, stackTrace) {
+          // Handle network image error
+        } : null,
+        child: imagePath.isEmpty ? Icon(Icons.person, size: radius * 0.8) : null,
+      );
+    }
   }
 
   void setReplyingTo(Map<String, dynamic>? comment) {
@@ -82,10 +117,9 @@ class _CommentSheetState extends State<CommentSheet> {
   void addNewComment() {
     if (commentController.text.trim().isEmpty) return;
     
-    setState(() {
-      final newComment = {
+    setState(() {      final newComment = {
         'id': DateTime.now().toString(),
-        'author': 'Vous',
+        'author': dataService.currentUser.username, // Utiliser le vrai nom d'utilisateur
         'text': commentController.text,
         'time': 'à l\'instant',
         'likes': 0,
@@ -124,9 +158,10 @@ class _CommentSheetState extends State<CommentSheet> {
         if (!commentFound) {
           demoComments.insert(0, newComment);
         }
-      } else {
-        // Ajouter un nouveau commentaire principal
+      } else {      // Ajouter un nouveau commentaire principal
         demoComments.insert(0, newComment);
+        // Sauvegarder dans le service
+        dataService.addCommentForUser(widget.userId, newComment);
       }
       
       // Réinitialiser
@@ -136,25 +171,24 @@ class _CommentSheetState extends State<CommentSheet> {
       // Mettre à jour le nombre total de commentaires
       commentCount = countAllComments();
       
+      // Mettre à jour le compteur dans le service
+      dataService.updateCommentCount(widget.userId, commentCount);
+      
       // Notifier la mise à jour du nombre de commentaires
       widget.onCommentAdded(commentCount);
-    });
-    
-    // Notification pour confirmer l'ajout
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Commentaire ajouté'),
-        duration: Duration(seconds: 1),
-      ),
+    });      // Notification pour confirmer l'ajout
+    CustomSnackBar.showInfo(
+      context,
+      message: 'Commentaire ajouté',
+      duration: const Duration(seconds: 1),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.75,
+      height: 600, // Hauteur fixe identique aux autres modaux
       decoration: const BoxDecoration(
-        color: Color(0xFF212121),
+        color: Colors.black, // Fond noir pour garder l'identité
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -171,29 +205,42 @@ class _CommentSheetState extends State<CommentSheet> {
               color: Colors.grey[600],
               borderRadius: BorderRadius.circular(2),
             ),
-          ),
-          
-          // Titre avec compteur
-          Padding(
-            padding: const EdgeInsets.all(16),
+          ),          // Titre avec compteur - hauteur fixe pour éviter l'agrandissement
+          Container(
+            height: 60, // Hauteur fixe
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               children: [
-                Text(
-                  'Commentaires ($commentCount)',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
-                const Spacer(),
-                if (replyingTo != null)
-                  TextButton.icon(
-                    icon: const Icon(Icons.close, size: 16, color: Colors.white70),
-                    label: const Text(
-                      'Annuler la réponse',
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    'Commentaires ($commentCount)',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontSize: 18, // Taille réduite
                     ),
-                    onPressed: () => setReplyingTo(null),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
+                ),                if (replyingTo != null) ...[
+                  const SizedBox(width: 8),
+                  Expanded(
+                    flex: 2,
+                    child: TextButton.icon(
+                      icon: const Icon(Icons.close, size: 16, color: Colors.white70),
+                      label: const Text(
+                        'Annuler',
+                        style: TextStyle(color: Colors.white70, fontSize: 12),
+                      ),
+                      onPressed: () => setReplyingTo(null),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -248,17 +295,10 @@ class _CommentSheetState extends State<CommentSheet> {
           ),
             // Champ de texte pour ajouter un commentaire
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+            padding: const EdgeInsets.all(8.0),            child: Row(
               crossAxisAlignment: CrossAxisAlignment.center, // Alignement centré verticalement
-              children: [
-                // Avatar de l'utilisateur
-                CircleAvatar(
-                  radius: 18,
-                  backgroundImage: NetworkImage(
-                    'https://i.pravatar.cc/150?img=5',
-                  ),
-                ),
+              children: [                // Avatar de l'utilisateur actuel
+                _buildProfileImage(dataService.currentUser.profilePicture, radius: 18),
                 const SizedBox(width: 8),
                 
                 // Champ de commentaire
@@ -311,14 +351,17 @@ class _CommentSheetState extends State<CommentSheet> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Avatar
-          CircleAvatar(
-            radius: isReply ? 14 : 18,
-            backgroundImage: NetworkImage(
-              'https://i.pravatar.cc/150?u=${comment['author']}',
-            ),
-          ),
+        children: [          // Avatar
+          comment['author'] == dataService.currentUser.username
+              ? _buildProfileImage(dataService.currentUser.profilePicture, radius: isReply ? 14 : 18)
+              : CircleAvatar(
+                  radius: isReply ? 14 : 18,
+                  backgroundColor: Colors.grey[600],
+                  backgroundImage: NetworkImage(
+                    'https://i.pravatar.cc/150?img=${comment['author'].hashCode % 70 + 1}',
+                  ),
+                  child: comment['author'].isEmpty ? const Icon(Icons.person, color: Colors.white70) : null,
+                ),
           const SizedBox(width: 8),
           
           // Contenu du commentaire

@@ -7,12 +7,18 @@ import '../../core/widgets/vertical_bar_chart.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
+  @override  Widget build(BuildContext context) {
     final MockDataService dataService = MockDataService();
-    final Map<String, int> popularGenres = dataService.getPopularGenres();
-    final Map<String, int> popularArtists = dataService.getPopularArtists();
-    final List<MusicModel> top10Tracks = dataService.getTop10PopularTracks();
+    
+    // Utiliser les statistiques basées sur les Top3 réels
+    final Map<String, int> popularGenres = dataService.getPopularGenresFromTop3s();
+    final Map<String, int> popularArtists = dataService.getPopularArtistsFromTop3s();
+    final List<MusicModel> top10Tracks = dataService.getTop10PopularTracksFromTop3s();
+    
+    // Si pas de données des Top3, fallback sur les données statiques
+    final Map<String, int> fallbackGenres = popularGenres.isEmpty ? dataService.getPopularGenres() : popularGenres;
+    final Map<String, int> fallbackArtists = popularArtists.isEmpty ? dataService.getPopularArtists() : popularArtists;
+    final List<MusicModel> fallbackTracks = top10Tracks.isEmpty ? dataService.getTop10PopularTracks() : top10Tracks;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -23,14 +29,13 @@ class StatisticsScreen extends StatelessWidget {
           opacity: 0.25,
           borderRadius: BorderRadius.circular(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            crossAxisAlignment: CrossAxisAlignment.start,            children: [
               // Genres Chart
               _buildChartSection(
                 context,
                 title: 'Genres les plus populaires',
                 chart: VerticalBarChart(
-                  data: popularGenres,
+                  data: fallbackGenres,
                   title: 'Genres',
                   height: 250,
                 ),
@@ -43,7 +48,7 @@ class StatisticsScreen extends StatelessWidget {
                 context,
                 title: 'Artistes du moment',
                 chart: VerticalBarChart(
-                  data: popularArtists,
+                  data: fallbackArtists,
                   title: 'Artistes',
                   height: 250,
                 ),
@@ -52,7 +57,7 @@ class StatisticsScreen extends StatelessWidget {
               const SizedBox(height: 32),
 
               // Top 10 Tracks
-              _buildTopTracksSection(context, top10Tracks),
+              _buildTopTracksSection(context, fallbackTracks),
             ],
           ),
         ),

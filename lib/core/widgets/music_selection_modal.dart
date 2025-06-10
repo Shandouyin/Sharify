@@ -47,11 +47,10 @@ class _MusicSelectionModalState extends State<MusicSelectionModal> {
         }).toList();
       }
     });
-  }
-  @override
+  }  @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.7,
+      height: 600, // Hauteur fixe pour éviter le problème de mouvement, identique à GlobalSearchModal
       decoration: const BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),

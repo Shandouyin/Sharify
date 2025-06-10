@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/user_model.dart';
@@ -5,44 +6,120 @@ import '../../data/models/music_model.dart';
 import '../../core/widgets/music_card.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/vertical_bar_chart.dart';
+import '../../core/widgets/custom_snack_bar.dart';
 
 // Définition de la couleur personnalisée pour les boutons (même que create_top3_screen.dart)
 const Color customButtonColor = Color(0xFF0F7ACC);
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
-    @override
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  late MockDataService dataService;
+  late UserModel currentUser;
+  late List<MusicModel> userTopMusic;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+  void _loadUserData() {
+    dataService = MockDataService();
+    currentUser = dataService.currentUser;
+    userTopMusic = dataService.getTopMusicForUser(currentUser.id);
+    
+    // Charger le dernier Top3 pour afficher dans la section "Dernier top 3"
+    final lastTop3 = dataService.getLastTop3ForUser(currentUser.id);
+    if (lastTop3 != null) {
+      // Remplacer userTopMusic par les musiques du dernier Top3
+      userTopMusic = lastTop3.musicIds
+          .map((id) => dataService.getMusicById(id))
+          .toList();
+    }
+  }
+  void _refreshUserData() {
+    setState(() {
+      _loadUserData();
+    });
+  }
+
+  Widget _buildProfileImage(String imagePath) {
+    // Check if it's a local file path or a network URL
+    bool isLocalFile = imagePath.startsWith('/') || 
+                      imagePath.contains('\\') || 
+                      imagePath.startsWith('file://') ||
+                      !imagePath.startsWith('http');
+
+    if (isLocalFile && imagePath.isNotEmpty) {
+      return Container(
+        width: 70,
+        height: 70,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 2),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(35),
+          child: Image.file(
+            File(imagePath),
+            width: 70,
+            height: 70,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: 70,
+                height: 70,
+                color: Colors.grey[300],
+                child: const Icon(Icons.person, size: 35),
+              );
+            },
+          ),
+        ),
+      );
+    } else {
+      return CircleAvatar(
+        radius: 35,
+        backgroundImage: NetworkImage(imagePath),
+        onBackgroundImageError: (exception, stackTrace) {
+          // Handle network image error
+        },
+        child: imagePath.isEmpty 
+            ? const Icon(Icons.person, size: 35)
+            : null,
+      );
+    }
+  }
+  @override
   Widget build(BuildContext context) {
-    final MockDataService dataService = MockDataService();
-    final UserModel currentUser = dataService.currentUser;
-    final List<MusicModel> userTopMusic =
-        dataService.getTopMusicForUser(currentUser.id);
-      return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),        child: GlassContainer(
+    return Scaffold(
+      backgroundColor: Colors.transparent,      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: GlassContainer(
           blur: 10,
-          opacity: 0.25,          child: Column(
+          opacity: 0.25,
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [                  // En-tête du profil avec image à gauche et infos à droite
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                      // Image de profil à gauche
-                      CircleAvatar(
-                        radius: 35,
-                        backgroundImage: NetworkImage(currentUser.profilePicture),
-                      ),
-                      
-                      const SizedBox(width: 16),
-                      
-                      // Informations utilisateur à droite
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+            children: [
+              // En-tête du profil avec image à gauche et infos à droite
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [                    // Image de profil à gauche
+                    _buildProfileImage(currentUser.profilePicture),
+                    
+                    const SizedBox(width: 16),
+                    
+                    // Informations utilisateur à droite
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                             Text(
                               currentUser.username,
                               style: const TextStyle(
@@ -86,15 +163,17 @@ class ProfileScreen extends StatelessWidget {
                       // Bouton "Modifier"
                       Expanded(
                         child: SizedBox(
-                          height: 40,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Modification du profil'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
+                          height: 40,                          child: ElevatedButton(
+                            onPressed: () async {
+                              final result = await Navigator.pushNamed(context, '/edit-profile');
+                              if (result == true) {
+                                // Rafraîchir les données utilisateur
+                                _refreshUserData();                                // Afficher un message de succès
+                                CustomSnackBar.showSuccess(
+                                  context,
+                                  message: 'Profil mis à jour avec succès',
+                                );
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: customButtonColor,
@@ -166,11 +245,11 @@ class ProfileScreen extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                  ),
-                  
-                  const SizedBox(height: 20),
+                  ),                  const SizedBox(height: 20),
                       // Charts section
                   _buildChartsSection(context, currentUser),
+                  
+                  const SizedBox(height: 50),
                 ],
             ),
         ),
@@ -301,20 +380,15 @@ class ProfileScreen extends StatelessWidget {
   }
   // Simuler un partage
   void _simulateShare(BuildContext context, String platform, String content,
-      {bool isLink = false}) {
-    if (isLink) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Lien copié dans le presse-papier'),
-          duration: Duration(seconds: 2),
-        ),
+      {bool isLink = false}) {    if (isLink) {
+      CustomSnackBar.showInfo(
+        context,
+        message: 'Lien copié dans le presse-papier',
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Partage via $platform : "$content"'),
-          duration: const Duration(seconds: 2),
-        ),
+      CustomSnackBar.showInfo(
+        context,
+        message: 'Partage via $platform : "$content"',
       );
     }
   }  Widget _buildMyTopMusic(BuildContext context, List<MusicModel> topMusic) {
@@ -468,20 +542,23 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
-
   // Widget pour construire la section des graphiques
   Widget _buildChartsSection(BuildContext context, UserModel user) {
     final MockDataService dataService = MockDataService();
-    final Map<String, int> userGenres = dataService.getUserGenres(user.id);
-    final Map<String, int> userArtists = dataService.getUserArtists(user.id);
-
-    return Column(
+    
+    // Utiliser les statistiques basées sur les Top3 réels
+    final Map<String, int> userGenres = dataService.getUserGenresFromTop3s(user.id);
+    final Map<String, int> userArtists = dataService.getUserArtistsFromTop3s(user.id);
+    
+    // Si pas de Top3, fallback sur les données statiques
+    final Map<String, int> fallbackGenres = userGenres.isEmpty ? dataService.getUserGenres(user.id) : userGenres;
+    final Map<String, int> fallbackArtists = userArtists.isEmpty ? dataService.getUserArtists(user.id) : userArtists;    return Column(
       children: [        // Graphique des genres
         _buildChartSection(
           context,
           title: 'Genres les plus écoutés',
           chart: VerticalBarChart(
-            data: userGenres,
+            data: fallbackGenres,
             title: 'Genres',
             height: 250,
           ),
@@ -494,7 +571,7 @@ class ProfileScreen extends StatelessWidget {
           context,
           title: 'Artistes les plus écoutés',
           chart: VerticalBarChart(
-            data: userArtists,
+            data: fallbackArtists,
             title: 'Artistes',
             height: 250,
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/music_selection_modal.dart';
+import '../../core/widgets/custom_snack_bar.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/music_model.dart';
 
@@ -58,27 +59,67 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
         return '$position';
     }
   }  void loadLastTop3() {
-    // Récupérer 3 musiques au hasard
-    final shuffledMusic = List.from(allMusic)..shuffle();
-    setState(() {
-      selectedMusic = [
-        shuffledMusic[0],
-        shuffledMusic[1],
-        shuffledMusic[2],
-      ];
-    });
+    final lastTop3 = dataService.getLastTop3ForUser(dataService.currentUser.id);
+    
+    if (lastTop3 != null) {
+      // Charger les musiques du dernier Top3
+      final List<MusicModel> musics = lastTop3.musicIds
+          .map((id) => dataService.getMusicById(id))
+          .toList();
+      
+      setState(() {
+        selectedMusic = [
+          musics.length > 0 ? musics[0] : null,
+          musics.length > 1 ? musics[1] : null,
+          musics.length > 2 ? musics[2] : null,
+        ];
+      });
+      
+      // Afficher un message de succès
+      CustomSnackBar.showSuccess(
+        context,
+        message: 'Dernier Top 3 chargé avec succès !',
+        duration: const Duration(seconds: 2),
+      );
+    } else {
+      // Si aucun Top3 précédent, générer aléatoirement comme avant
+      final shuffledMusic = List.from(allMusic)..shuffle();
+      setState(() {
+        selectedMusic = [
+          shuffledMusic[0],
+          shuffledMusic[1],
+          shuffledMusic[2],
+        ];
+      });
+      
+      // Afficher un message d'information
+      CustomSnackBar.showInfo(
+        context,
+        message: 'Aucun Top 3 précédent trouvé. Musiques aléatoires chargées.',
+        duration: const Duration(seconds: 2),
+      );
+    }
   }void publishTop3() {
     // Vérifier si toutes les musiques sont sélectionnées
     bool allSelected = selectedMusic.every((music) => music != null);
     
     if (allSelected) {
+      // Sauvegarder le Top3 pour l'utilisateur actuel
+      final List<String> musicIds = selectedMusic
+          .map((music) => music!.id)
+          .toList();
+      
+      dataService.addTop3ForUser(
+        dataService.currentUser.id,
+        musicIds,
+        title: null, // Pas de titre personnalisé pour l'instant
+      );
+      
       // Afficher une notification de succès
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Top 3 publié avec succès !'),
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.green,
-        ),
+      CustomSnackBar.showSuccess(
+        context,
+        message: 'Top 3 publié avec succès !',
+        duration: const Duration(seconds: 3),
       );
       
       // Réinitialiser les sélections pour la prochaine fois
@@ -92,12 +133,9 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
       }
     } else {
       // Afficher un message d'erreur si le top 3 n'est pas complet
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Veuillez sélectionner 3 musiques pour publier votre Top 3'),
-          duration: Duration(seconds: 2),
-          backgroundColor: Colors.red,
-        ),
+      CustomSnackBar.showError(
+        context,
+        message: 'Veuillez sélectionner 3 musiques pour publier votre Top 3',
       );
     }
   }  Widget _buildMusicSlot(int index) {
@@ -180,13 +218,9 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
             Icons.play_circle_filled,
             color: _getButtonColorForRank(rank),
             size: 42,
-          ),
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Lecture de la prévisualisation'),
-                duration: Duration(seconds: 2),
-              ),
+          ),          onPressed: () {            CustomSnackBar.showInfo(
+              context,
+              message: 'Lecture de la prévisualisation',
             );
           },
         ),

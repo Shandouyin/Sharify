@@ -12,15 +12,16 @@ class AllTop3Screen extends StatelessWidget {
 
   const AllTop3Screen({super.key, this.userId});
 
-  @override
-  Widget build(BuildContext context) {
+  @override  Widget build(BuildContext context) {
     final MockDataService dataService = MockDataService();
     final UserModel targetUser = userId != null 
         ? dataService.getUserById(userId!)
         : dataService.currentUser;
     
-    // Données simulées de Top3 avec dates
-    final List<Top3Model> userTop3s = _getMockTop3sForUser(targetUser.id, dataService);    return Scaffold(
+    // Récupérer les Top3 spécifiques à l'utilisateur
+    final List<Top3Model> userTop3s = dataService.getTop3sForUser(targetUser.id);
+
+    return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Top 3 de ${targetUser.username}'),
@@ -90,9 +91,7 @@ class AllTop3Screen extends StatelessWidget {
         .map((id) => dataService.getMusicById(id))
         .toList();
       // Formatage simple de la date avec zéros
-    final String formattedDate = '${top3.createdAt.day.toString().padLeft(2, '0')}/${top3.createdAt.month.toString().padLeft(2, '0')}/${top3.createdAt.year}';
-
-    return Column(
+    final String formattedDate = '${top3.createdAt.day.toString().padLeft(2, '0')}/${top3.createdAt.month.toString().padLeft(2, '0')}/${top3.createdAt.year}';    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Date en en-tête
@@ -120,55 +119,5 @@ class AllTop3Screen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  // Fonction pour générer des données mockées de Top3 avec dates
-  List<Top3Model> _getMockTop3sForUser(String userId, MockDataService dataService) {
-    final List<MusicModel> allMusic = dataService.getAllMusic();
-    final List<Top3Model> top3s = [];
-    
-    // Générer quelques Top3 avec des dates différentes
-    final DateTime now = DateTime.now();
-    
-    // Top3 d'il y a 1 semaine
-    top3s.add(Top3Model(
-      id: 't1_$userId',
-      userId: userId,
-      musicIds: [allMusic[0].id, allMusic[1].id, allMusic[2].id],
-      createdAt: now.subtract(const Duration(days: 7)),
-      title: 'Mes découvertes de la semaine',
-    ));
-    
-    // Top3 d'il y a 2 semaines
-    top3s.add(Top3Model(
-      id: 't2_$userId',
-      userId: userId,
-      musicIds: [allMusic[3].id, allMusic[4].id, allMusic[5].id],
-      createdAt: now.subtract(const Duration(days: 14)),
-      title: 'Playlist été',
-    ));
-    
-    // Top3 d'il y a 1 mois
-    top3s.add(Top3Model(
-      id: 't3_$userId',
-      userId: userId,
-      musicIds: [allMusic[6].id, allMusic[7].id, allMusic[8].id],
-      createdAt: now.subtract(const Duration(days: 30)),
-      title: 'Classics du mois',
-    ));
-    
-    // Top3 d'il y a 2 mois
-    top3s.add(Top3Model(
-      id: 't4_$userId',
-      userId: userId,
-      musicIds: [allMusic[9].id, allMusic[10].id, allMusic[11].id],
-      createdAt: now.subtract(const Duration(days: 60)),
-    ));
-    
-    // Trier par date (plus récent en premier)
-    top3s.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    
-    return top3s;
-  }
+    );}
 }

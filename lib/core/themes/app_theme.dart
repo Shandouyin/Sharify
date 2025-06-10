@@ -7,6 +7,7 @@ class AppTheme {
   static const backgroundColor = Color(0xFFF5F5F5);
   static const cardColor = Colors.white;
   static const errorColor = Color(0xFFE57373);
+  static const snackBarColor = Color(0xFF0F7ACC); // Couleur personnalisée pour les SnackBars
 
   // Light theme
   static final ThemeData lightTheme = ThemeData(

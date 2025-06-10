@@ -3,6 +3,7 @@ import '../../data/models/music_model.dart';
 import '../../data/models/user_model.dart';
 import '../../data/datasources/mock_data_service.dart';
 import 'music_card.dart';
+import 'custom_snack_bar.dart';
 
 class GlobalSearchModal extends StatefulWidget {
   const GlobalSearchModal({super.key});
@@ -95,21 +96,14 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
   void _toggleFollow(String userId) {
     setState(() {
       followStatus[userId] = !(followStatus[userId] ?? false);
-    });
-    
-    // Afficher une notification
+    });    // Afficher une notification
     final isFollowing = followStatus[userId] ?? false;
     final user = filteredUsers.firstWhere((u) => u.id == userId);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isFollowing 
-              ? 'Vous suivez maintenant ${user.username}'
-              : 'Vous ne suivez plus ${user.username}',
-        ),
-        duration: const Duration(seconds: 2),
-        backgroundColor: isFollowing ? Colors.green : Colors.orange,
-      ),
+    CustomSnackBar.showInfo(
+      context,
+      message: isFollowing 
+          ? 'Vous suivez maintenant ${user.username}'
+          : 'Vous ne suivez plus ${user.username}',
     );
   }
 
@@ -274,35 +268,38 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
       itemBuilder: (context, index) {
         final user = filteredUsers[index];
         final isFollowing = followStatus[user.id] ?? false;
-        
-        return Padding(
+          return Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.grey.withAlpha(64),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                // Photo de profil
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Image.network(
-                      user.profilePicture,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[300],
-                          child: const Icon(Icons.person, size: 30),
-                        );
-                      },
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/user-profile', arguments: user.id);
+            },
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey.withAlpha(64),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [                  // Photo de profil
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Image.network(
+                        user.profilePicture,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.person, size: 30),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
                 
                 const SizedBox(width: 16),
                 
@@ -340,12 +337,13 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
                       fixedSize: const Size(90, 36),
                       alignment: Alignment.center,
                     ),
-                  ),
-                ),
-              ],
+                  ),                ),
+                ],
+              ),
             ),
           ),
         );
       },
-    );  }
+    );
+  }
 }

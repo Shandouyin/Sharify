@@ -2,32 +2,40 @@ import 'package:flutter/material.dart';
 import '../../core/widgets/music_card.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/comment_sheet.dart';
+import '../../core/widgets/custom_snack_bar.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/music_model.dart';
 import '../../data/models/user_model.dart';
 
 // Widget pour le bouton Like avec état (repris de la page amis)
-class LikeButton extends StatefulWidget {
-  final Function() onLikeChanged;
+class LikeButton extends StatefulWidget {  final Function() onLikeChanged;
   final int initialCount;
+  final String userId;
+  final MockDataService dataService;
 
-  const LikeButton(
-      {super.key, required this.onLikeChanged, required this.initialCount});
+  const LikeButton({
+    super.key, 
+    required this.onLikeChanged, 
+    required this.initialCount,
+    required this.userId,
+    required this.dataService,
+  });
 
   @override
   State<LikeButton> createState() => _LikeButtonState();
 }
 
 class _LikeButtonState extends State<LikeButton> {
-  bool isLiked = false;
+  late bool isLiked;
   late int likeCount;
 
   @override
   void initState() {
     super.initState();
     likeCount = widget.initialCount;
+    // Vérifier si l'utilisateur actuel a déjà liké ce post
+    isLiked = widget.dataService.hasUserLikedPost(widget.userId);
   }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -37,12 +45,21 @@ class _LikeButtonState extends State<LikeButton> {
             isLiked ? Icons.favorite : Icons.favorite_border,
             color: isLiked ? Colors.red : Colors.white,
             size: 28,
-          ),
-          onPressed: () {
+          ),          onPressed: () {
             setState(() {
-              isLiked = !isLiked;
-              likeCount = isLiked ? likeCount + 1 : likeCount - 1;
-              widget.onLikeChanged();
+              if (!isLiked) {
+                isLiked = true;
+                likeCount = likeCount + 1;
+                // Marquer ce post comme liké dans le service
+                widget.dataService.likePost(widget.userId);
+                widget.onLikeChanged();
+              } else {
+                isLiked = false;
+                likeCount = likeCount - 1;
+                // Retirer le like de ce post dans le service
+                widget.dataService.unlikePost(widget.userId);
+                widget.onLikeChanged();
+              }
             });
           },
         ),
@@ -81,7 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final Map<int, int> commentCounts = {};
   final Map<int, bool> followStatus =
       {}; // Pour gérer l'état des boutons Suivre
-
   @override
   void initState() {
     super.initState();
@@ -94,20 +110,32 @@ class _HomeScreenState extends State<HomeScreen> {
         .where((user) =>
             user.id != currentUser.id &&
             !currentUser.friendIds.contains(user.id))
-        .toList();
-
-    // Initialiser les compteurs avec des valeurs par défaut
+        .toList();    // Initialiser les compteurs avec des données persistantes
     for (int i = 0; i < communityUsers.length; i++) {
-      likeCounts[i] = 15 + (i % 5);
-      shareCounts[i] = 7 + (i % 3);
-      commentCounts[i] = 10 + (i % 4);
+      final user = communityUsers[i];
+      final interactionData = dataService.getInteractionDataForUser(user.id);
+      
+      likeCounts[i] = interactionData['likes']!;
+      shareCounts[i] = interactionData['shares']!;
+      
+      // Obtenir le vrai nombre de commentaires
+      dataService.getCommentsForUser(user.id, user.username);
+      int commentCount = dataService.getTotalCommentCount(user.id);
+      commentCounts[i] = commentCount;
+      
+      // Mettre à jour le compteur dans le service
+      dataService.updateCommentCount(user.id, commentCount);
+      
       followStatus[i] = false; // Tous les utilisateurs non suivis par défaut
     }
-  }
-
-  void incrementLikes(int userIndex) {
+  }  void incrementLikes(int userIndex) {
     setState(() {
-      likeCounts[userIndex] = (likeCounts[userIndex] ?? 0) + 1;
+      // Cette méthode n'est plus utilisée pour incrémenter/décrémenter
+      // La logique est maintenant gérée directement dans le LikeButton
+      // et synchronisée avec le service de données
+      final user = communityUsers[userIndex];
+      final interactionData = dataService.getInteractionDataForUser(user.id);
+      likeCounts[userIndex] = interactionData['likes']!;
     });
   }
 
@@ -139,10 +167,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: communityUsers.length,
-      itemBuilder: (context, index) {
+      itemCount: communityUsers.length,      itemBuilder: (context, index) {
         final user = communityUsers[index];
-        final userTopMusic = dataService.getTopMusicForUser(user.id);
+        
+        // Charger le dernier Top3 de l'utilisateur
+        List<MusicModel> userTopMusic = dataService.getTopMusicForUser(user.id);
+        final lastTop3 = dataService.getLastTop3ForUser(user.id);
+        if (lastTop3 != null) {
+          userTopMusic = lastTop3.musicIds
+              .map((id) => dataService.getMusicById(id))
+              .toList();
+        }
+        
         final bool isFollowing = followStatus[index] ?? false;
 
         return GlassContainer(
@@ -151,54 +187,65 @@ class _HomeScreenState extends State<HomeScreen> {
           margin: const EdgeInsets.only(bottom: 24),
           padding: const EdgeInsets.all(8),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // User header
-              ListTile(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                leading: CircleAvatar(
-                  radius: 24,
-                  backgroundImage: NetworkImage(user.profilePicture),
-                ),                title: Text(
-                  user.username,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                subtitle: Text(
-                  '${20 - index % 15}/05/2025', // Date simulée
-                  style: const TextStyle(fontSize: 14),
-                ),                trailing: SizedBox(
-                  width: 90, // Largeur réduite
-                  height: 36, // Hauteur réduite
-                  child: ElevatedButton.icon(
-                    icon: Icon(isFollowing ? Icons.check : Icons.person_add,
-                        size: 16), // Icône plus petite
-                    label: Text(
-                      isFollowing ? 'Suivi(e)' : 'Suivre',
-                      style: TextStyle(fontSize: 12), // Texte plus petit
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isFollowing ? Colors.grey : customButtonColor,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.zero,
-                      fixedSize: const Size(90, 36), // Taille fixe réduite
-                      alignment: Alignment.center,
-                    ),
-                    onPressed: () {
-                      toggleFollowStatus(index);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(isFollowing
-                              ? 'Vous ne suivez plus ${user.username}'
-                              : 'Vous suivez maintenant ${user.username}'),
-                          duration: const Duration(seconds: 2),
+            crossAxisAlignment: CrossAxisAlignment.start,            children: [              // User header
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/user-profile', arguments: user.id);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 24,
+                        backgroundImage: NetworkImage(user.profilePicture),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.username,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '${20 - index % 15}/05/2025', // Date simulée
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
                         ),
-                      );
-                    },
+                      ),                      SizedBox(
+                        width: 90, // Largeur réduite
+                        height: 36, // Hauteur réduite
+                        child: ElevatedButton.icon(
+                          icon: Icon(isFollowing ? Icons.check : Icons.person_add,
+                              size: 16), // Icône plus petite
+                          label: Text(
+                            isFollowing ? 'Suivi(e)' : 'Suivre',
+                            style: TextStyle(fontSize: 12), // Texte plus petit
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                isFollowing ? Colors.grey : customButtonColor,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.zero,
+                            fixedSize: const Size(90, 36), // Taille fixe réduite
+                            alignment: Alignment.center,
+                          ),
+                          onPressed: () {                            toggleFollowStatus(index);
+                            CustomSnackBar.showInfo(
+                              context,
+                              message: isFollowing
+                                  ? 'Vous ne suivez plus ${user.username}'
+                                  : 'Vous suivez maintenant ${user.username}',
+                            );
+                          },
+                        ),                      ),
+                    ],
                   ),
                 ),
               ),
@@ -225,9 +272,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     // Icône de cœur (Like) avec compteur
                     Column(
-                      children: [
-                        LikeButton(
+                      children: [                        LikeButton(
                           initialCount: likeCounts[index] ?? 0,
+                          userId: user.id,
+                          dataService: dataService,
                           onLikeChanged: () => incrementLikes(index),
                         ),
                       ],
@@ -271,9 +319,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) => CommentSheet(
+                              backgroundColor: Colors.transparent,                              builder: (context) => CommentSheet(
                                 username: user.username,
+                                userId: user.id,
                                 onCommentAdded: (count) {
                                   updateCommentCount(index, count);
                                 },
@@ -442,22 +490,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Simuler un partage
   void _simulateShare(BuildContext context, String platform, String content,
-      {bool isLink = false}) {
-    if (isLink) {
+      {bool isLink = false}) {    if (isLink) {
       // Simuler la copie du lien
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Lien copié dans le presse-papier'),
-          duration: Duration(seconds: 2),
-        ),
+      CustomSnackBar.showInfo(
+        context,
+        message: 'Lien copié dans le presse-papier',
       );
     } else {
       // Simuler le partage sur la plateforme spécifiée
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Partage via $platform : "$content"'),
-          duration: const Duration(seconds: 2),
-        ),
+      CustomSnackBar.showInfo(
+        context,
+        message: 'Partage via $platform : "$content"',
       );
     }
   }

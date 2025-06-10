@@ -79,15 +79,14 @@ class VerticalBarChart extends StatelessWidget {
                     child: Column(
                       children: [
                         // Spacer pour pousser le contenu vers le bas
-                        const Spacer(),
-                        // Value label
+                        const Spacer(),                        // Value label
                         Container(
                           margin: const EdgeInsets.only(bottom: 4),
                           child: Text(
                             value.toString(),
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 12,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
