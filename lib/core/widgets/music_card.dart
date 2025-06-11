@@ -21,9 +21,10 @@ class MusicCard extends StatelessWidget {
   // Get colors based on rank
   Color getBackgroundColor() {
     if (backgroundColor != null) return backgroundColor!;
-      switch (rank) {
+    switch (rank) {
       case 1:
-        return const Color(0xFFF0C300).withAlpha(64); // Gold for 1st (0.25 * 255 = 64)
+        return const Color(0xFFF0C300)
+            .withAlpha(64); // Gold for 1st (0.25 * 255 = 64)
       case 2:
         return const Color(0xFFF0F0F0).withAlpha(64); // Silver for 2nd
       case 3:
@@ -35,7 +36,7 @@ class MusicCard extends StatelessWidget {
 
   Color getButtonColor() {
     if (buttonColor != null) return buttonColor!;
-    
+
     switch (rank) {
       case 1:
         return const Color(0xFFFF9900); // Gold button
@@ -46,8 +47,11 @@ class MusicCard extends StatelessWidget {
       default:
         return Colors.grey;
     }
-  }  @override
-  Widget build(BuildContext context) {    // Si backgroundColor est transparent, on utilise un conteneur simple sans Card
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Si backgroundColor est transparent, on utilise un conteneur simple sans Card
     if (backgroundColor == Colors.transparent) {
       return InkWell(
         onTap: onTap,
@@ -69,21 +73,22 @@ class MusicCard extends StatelessWidget {
                 },
               ),
             ),
-            
+
             // Espace entre l'image et le texte
             const SizedBox(width: 15),
-            
+
             // Song details
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [                    Text(
+                  children: [
+                    Text(
                       music.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -97,31 +102,38 @@ class MusicCard extends StatelessWidget {
                   ],
                 ),
               ),
-            ),              // Play button
+            ), // Play button
             Consumer<AudioPlayerService>(
               builder: (context, audioService, child) {
                 final isCurrentMusic = audioService.isMusicLoaded(music);
                 final isPlaying = audioService.isPlayingMusic(music);
-                final isLoading = audioService.isLoading && 
-                    (audioService.currentMusic?.id == music.id || audioService.currentMusic == null);
+                final isLoading = audioService.isLoading &&
+                    (audioService.currentMusic?.id == music.id ||
+                        audioService.currentMusic == null);
 
                 return IconButton(
                   icon: Icon(
-                    isLoading 
+                    isLoading
                         ? Icons.hourglass_empty
-                        : isPlaying 
-                            ? Icons.pause_circle_filled
-                            : Icons.play_circle_filled,
+                        : (audioService.isCompleted && isCurrentMusic)
+                            ? Icons.refresh
+                            : isPlaying
+                                ? Icons.pause_circle_filled
+                                : Icons.play_circle_filled,
                     color: getButtonColor(),
                     size: 42,
                   ),
-                  onPressed: isLoading ? null : () async {
-                    if (isCurrentMusic) {
-                      await audioService.togglePlayPause();
-                    } else {
-                      await audioService.playMusic(music);
-                    }
-                  },
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                          if (audioService.isCompleted && isCurrentMusic) {
+                            await audioService.restart();
+                          } else if (isCurrentMusic) {
+                            await audioService.togglePlayPause();
+                          } else {
+                            await audioService.playMusic(music);
+                          }
+                        },
                 );
               },
             ),
@@ -129,7 +141,7 @@ class MusicCard extends StatelessWidget {
         ),
       );
     }
-    
+
     // Comportement normal avec Card pour les autres cas
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -140,7 +152,8 @@ class MusicCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Row(
-          children: [            // Album art
+          children: [
+            // Album art
             SizedBox(
               width: 80,
               height: 80,
@@ -155,10 +168,10 @@ class MusicCard extends StatelessWidget {
                 },
               ),
             ),
-            
+
             // Espace entre l'image et le texte
             const SizedBox(width: 15),
-              // Song details
+            // Song details
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -168,11 +181,11 @@ class MusicCard extends StatelessWidget {
                     Text(
                       music.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: backgroundColor == Colors.transparent 
-                            ? Colors.white 
-                            : null, // Use theme color for Card version
-                      ),
+                            fontWeight: FontWeight.bold,
+                            color: backgroundColor == Colors.transparent
+                                ? Colors.white
+                                : null, // Use theme color for Card version
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -180,41 +193,48 @@ class MusicCard extends StatelessWidget {
                     Text(
                       music.artist,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: backgroundColor == Colors.transparent 
-                            ? Colors.white70 
-                            : null, // Use theme color for Card version
-                      ),
+                            color: backgroundColor == Colors.transparent
+                                ? Colors.white70
+                                : null, // Use theme color for Card version
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
-            ),              // Play button
+            ), // Play button
             Consumer<AudioPlayerService>(
               builder: (context, audioService, child) {
                 final isCurrentMusic = audioService.isMusicLoaded(music);
                 final isPlaying = audioService.isPlayingMusic(music);
-                final isLoading = audioService.isLoading && 
-                    (audioService.currentMusic?.id == music.id || audioService.currentMusic == null);
+                final isLoading = audioService.isLoading &&
+                    (audioService.currentMusic?.id == music.id ||
+                        audioService.currentMusic == null);
 
                 return IconButton(
                   icon: Icon(
-                    isLoading 
+                    isLoading
                         ? Icons.hourglass_empty
-                        : isPlaying 
-                            ? Icons.pause_circle_filled
-                            : Icons.play_circle_filled,
+                        : (audioService.isCompleted && isCurrentMusic)
+                            ? Icons.refresh
+                            : isPlaying
+                                ? Icons.pause_circle_filled
+                                : Icons.play_circle_filled,
                     color: getButtonColor(),
                     size: 42,
                   ),
-                  onPressed: isLoading ? null : () async {
-                    if (isCurrentMusic) {
-                      await audioService.togglePlayPause();
-                    } else {
-                      await audioService.playMusic(music);
-                    }
-                  },
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                          if (audioService.isCompleted && isCurrentMusic) {
+                            await audioService.restart();
+                          } else if (isCurrentMusic) {
+                            await audioService.togglePlayPause();
+                          } else {
+                            await audioService.playMusic(music);
+                          }
+                        },
                 );
               },
             ),

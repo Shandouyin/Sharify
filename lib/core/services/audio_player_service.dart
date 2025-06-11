@@ -11,18 +11,19 @@ class AudioPlayerService extends ChangeNotifier {
   }
 
   final AudioPlayer _audioPlayer = AudioPlayer();
-  
+
   MusicModel? _currentMusic;
   bool _isPlaying = false;
   bool _isLoading = false;
+  bool _isCompleted = false;
   Duration _currentPosition = Duration.zero;
   Duration _totalDuration = Duration.zero;
   String? _currentPreviewUrl;
-
   // Getters
   MusicModel? get currentMusic => _currentMusic;
   bool get isPlaying => _isPlaying;
   bool get isLoading => _isLoading;
+  bool get isCompleted => _isCompleted;
   Duration get currentPosition => _currentPosition;
   Duration get totalDuration => _totalDuration;
   bool get hasMusic => _currentMusic != null;
@@ -32,6 +33,11 @@ class AudioPlayerService extends ChangeNotifier {
       // Si la musique commence à jouer, on n'est plus en loading
       if (state.playing) {
         _isLoading = false;
+        _isCompleted = false; // Reset completion state when music starts
+      }
+      // Détecter quand la musique se termine naturellement
+      if (state.processingState == ProcessingState.completed) {
+        _isCompleted = true;
       }
       notifyListeners();
     });
@@ -49,6 +55,7 @@ class AudioPlayerService extends ChangeNotifier {
     // Arrêter automatiquement après 30 secondes (preview)
     _audioPlayer.positionStream.listen((position) {
       if (position.inSeconds >= 30) {
+        _isCompleted = true;
         stop();
       }
     });
@@ -83,9 +90,7 @@ class AudioPlayerService extends ChangeNotifier {
 
       // Rechercher la musique sur Deezer
       final deezerTrack = await DeezerService.searchTrackWithFallback(
-        music.title, 
-        music.artist
-      );
+          music.title, music.artist);
 
       if (deezerTrack != null && deezerTrack['preview_url'] != null) {
         _currentPreviewUrl = deezerTrack['preview_url'];
@@ -96,7 +101,8 @@ class AudioPlayerService extends ChangeNotifier {
         await _audioPlayer.play();
       } else {
         // Si pas de preview Deezer, essayer avec l'URL du mock (si disponible)
-        if (music.previewUrl.isNotEmpty && !music.previewUrl.contains('example.com')) {
+        if (music.previewUrl.isNotEmpty &&
+            !music.previewUrl.contains('example.com')) {
           _currentPreviewUrl = music.previewUrl;
           _currentMusic = music;
           await _audioPlayer.setUrl(_currentPreviewUrl!);
@@ -104,7 +110,8 @@ class AudioPlayerService extends ChangeNotifier {
         } else {
           throw Exception('Aucun aperçu disponible pour cette musique');
         }
-      }    } catch (e) {
+      }
+    } catch (e) {
       // En mode debug, on peut utiliser debugPrint, sinon on ignore silencieusement
       assert(() {
         debugPrint('Erreur lors de la lecture: $e');
@@ -136,6 +143,17 @@ class AudioPlayerService extends ChangeNotifier {
       await resume();
     }
   }
+
+  /// Redémarre la musique depuis le début
+  Future<void> restart() async {
+    if (_currentMusic != null && _currentPreviewUrl != null) {
+      _isCompleted = false;
+      await _audioPlayer.seek(Duration.zero);
+      await _audioPlayer.play();
+      notifyListeners();
+    }
+  }
+
   /// Arrête complètement la lecture
   Future<void> stop() async {
     await _audioPlayer.stop();
@@ -144,6 +162,7 @@ class AudioPlayerService extends ChangeNotifier {
     _currentPosition = Duration.zero;
     _totalDuration = Duration.zero;
     _isLoading = false; // Réinitialiser le loading state
+    _isCompleted = false; // Réinitialiser le completion state
     notifyListeners();
   }
 

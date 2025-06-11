@@ -15,26 +15,31 @@ class MiniPlayer extends StatelessWidget {
 
         final music = audioService.currentMusic!;
         final progress = audioService.totalDuration.inMilliseconds > 0
-            ? audioService.currentPosition.inMilliseconds / audioService.totalDuration.inMilliseconds
-            : 0.0;        return Container(
+            ? audioService.currentPosition.inMilliseconds /
+                audioService.totalDuration.inMilliseconds
+            : 0.0;
+        return Container(
           height: 80,
           decoration: BoxDecoration(
             color: Colors.black.withValues(alpha: 0.9),
-            border: Border(top: BorderSide(color: Colors.grey.withValues(alpha: 0.3))),
+            border: Border(
+                top: BorderSide(color: Colors.grey.withValues(alpha: 0.3))),
           ),
           child: Column(
-            children: [              // Barre de progression
+            children: [
+              // Barre de progression
               LinearProgressIndicator(
                 value: progress,
                 backgroundColor: Colors.grey.withValues(alpha: 0.3),
                 valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
                 minHeight: 2,
               ),
-              
+
               // Contenu du mini-lecteur
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Row(
                     children: [
                       // Image de l'album
@@ -55,9 +60,9 @@ class MiniPlayer extends StatelessWidget {
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(width: 12),
-                      
+
                       // Informations de la musique
                       Expanded(
                         child: Column(
@@ -84,8 +89,9 @@ class MiniPlayer extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
-                        ),                      ),
-                        // Contrôles
+                        ),
+                      ),
+                      // Contrôles
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: Row(
@@ -95,7 +101,9 @@ class MiniPlayer extends StatelessWidget {
                           children: [
                             // Temps restant (sur 30s)
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),                              decoration: BoxDecoration(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 4, vertical: 2),
+                              decoration: BoxDecoration(
                                 color: Colors.grey.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(6),
                               ),
@@ -108,9 +116,8 @@ class MiniPlayer extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            
+
                             const SizedBox(width: 2),
-                            
                             // Bouton play/pause
                             SizedBox(
                               width: 32,
@@ -120,22 +127,28 @@ class MiniPlayer extends StatelessWidget {
                                 icon: Icon(
                                   audioService.isLoading
                                       ? Icons.hourglass_empty
-                                      : audioService.isPlaying
-                                          ? Icons.pause
-                                          : Icons.play_arrow,
+                                      : audioService.isCompleted
+                                          ? Icons.refresh
+                                          : audioService.isPlaying
+                                              ? Icons.pause
+                                              : Icons.play_arrow,
                                   color: Colors.white,
                                   size: 20,
                                 ),
                                 onPressed: audioService.isLoading
                                     ? null
                                     : () async {
-                                        await audioService.togglePlayPause();
+                                        if (audioService.isCompleted) {
+                                          await audioService.restart();
+                                        } else {
+                                          await audioService.togglePlayPause();
+                                        }
                                       },
                               ),
                             ),
-                            
+
                             const SizedBox(width: 2),
-                            
+
                             // Bouton stop
                             SizedBox(
                               width: 28,
