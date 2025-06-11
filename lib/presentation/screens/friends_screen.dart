@@ -128,9 +128,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
     setState(() {
       commentCounts[friendIndex] = count;
     });
-  }
-
-  @override
+  }  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -142,11 +140,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
     if (friends.isEmpty) {
       return _buildEmptyState(
           'No friends yet', 'Add friends to see their music taste');
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: friends.length,      itemBuilder: (context, index) {
+    }    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 60), // Padding réduit à 60px
+      itemCount: friends.length,itemBuilder: (context, index) {
         final friend = friends[index];
         
         // Charger le dernier Top3 de l'ami

@@ -6,9 +6,7 @@ import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/vertical_bar_chart.dart';
 
 class StatisticsScreen extends StatelessWidget {
-  const StatisticsScreen({super.key});
-  @override  Widget build(BuildContext context) {
-    final MockDataService dataService = MockDataService();
+  const StatisticsScreen({super.key});  @override  Widget build(BuildContext context) {    final MockDataService dataService = MockDataService();
     
     // Utiliser les statistiques basées sur les Top3 réels
     final Map<String, int> popularGenres = dataService.getPopularGenresFromTop3s();
@@ -21,9 +19,8 @@ class StatisticsScreen extends StatelessWidget {
     final List<MusicModel> fallbackTracks = top10Tracks.isEmpty ? dataService.getTop10PopularTracks() : top10Tracks;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      backgroundColor: Colors.transparent,      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 60), // Padding réduit à 60px
         child: GlassContainer(
           blur: 10,
           opacity: 0.25,

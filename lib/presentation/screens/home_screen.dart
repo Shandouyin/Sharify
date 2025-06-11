@@ -149,9 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       followStatus[userIndex] = !(followStatus[userIndex] ?? false);
     });
-  }
-
-  @override
+  }  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -163,11 +161,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (communityUsers.isEmpty) {
       return _buildEmptyState('Il n\'y a personne d\'autre',
           'Tous les utilisateurs sont déjà vos amis!');
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: communityUsers.length,      itemBuilder: (context, index) {
+    }    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 60), // Padding réduit à 60px
+      itemCount: communityUsers.length,itemBuilder: (context, index) {
         final user = communityUsers[index];
         
         // Charger le dernier Top3 de l'utilisateur

@@ -403,9 +403,7 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
       default:
         return Colors.grey;
     }
-  }
-
-  @override
+  }  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -413,9 +411,8 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
         padding: const EdgeInsets.all(16),
         child: GlassContainer(
           blur: 10,
-          opacity: 0.25,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+          opacity: 0.25,            child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 60), // Padding réduit à 60px
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

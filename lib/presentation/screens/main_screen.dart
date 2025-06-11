@@ -27,6 +27,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+
   late final List<Widget> _screens = [
     const HomeScreen(),
     const FriendsScreen(),
@@ -72,11 +73,10 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
         ],
-      ),
-      body: BackgroundContainer(
+      ),      body: BackgroundContainer(
         child: _screens[_selectedIndex],
       ),
-      extendBody: true, // Pour permettre au contenu d'aller sous la navbar
+      extendBody: true,
       bottomNavigationBar: Consumer<AudioPlayerService>(
         builder: (context, audioService, child) {
           final bool hasActiveMusic = audioService.hasMusic;

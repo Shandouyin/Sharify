@@ -104,12 +104,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             : null,
       );
     }
-  }
-  @override
+  }  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 60), // Padding réduit à 60px
         child: GlassContainer(
           blur: 10,
           opacity: 0.25,
