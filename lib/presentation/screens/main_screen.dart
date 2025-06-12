@@ -101,9 +101,8 @@ class _MainScreenState extends State<MainScreen> {
                     borderRadius: hasActiveMusic
                         ? BorderRadius.zero
                         : BorderRadius.circular(30),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _buildNavItem(Icons.home, 'Accueil', 0),
                       _buildNavItem(Icons.people, 'Ami(e)s', 1),
@@ -126,14 +125,12 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
-
   Widget _buildNavItem(IconData icon, String label, int index,
       {double size = 30}) {
     bool isSelected = _selectedIndex == index;
     const Color selectedColor = Color(0xFF0F7ACC); // Bleu spécifié (0F7ACC)
 
-    return SizedBox(
-      width: 72, // Largeur fixe pour éviter l'étirement
+    return Expanded(
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => _onItemTapped(index),
