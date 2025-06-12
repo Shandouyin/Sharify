@@ -8,8 +8,6 @@ import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/vertical_bar_chart.dart';
 import '../../core/widgets/custom_snack_bar.dart';
 import '../../core/widgets/share_options_widget.dart';
-import '../../core/widgets/profile_avatar.dart';
-import '../../core/widgets/custom_button.dart';
 import '../../core/constants/app_constants.dart';
 
 // Définition de la couleur personnalisée pour les boutons
@@ -62,13 +60,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context,
         message: 'Profil mis à jour avec succès',
       );
-    }
-  }
+    }  }
+
   Widget _buildProfileImage(String imagePath) {
-    return ProfileAvatar(
-      imagePath: imagePath,
-      radius: 35,
-    );
+    // Check if it's a local file path or a network URL
+    bool isLocalFile = imagePath.startsWith('/') || 
+                      imagePath.contains('\\') || 
+                      imagePath.startsWith('file://') ||
+                      !imagePath.startsWith('http');
+
+    if (isLocalFile && imagePath.isNotEmpty) {
+      return Container(
+        width: 70,
+        height: 70,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 2),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(35),
+          child: Image.file(
+            File(imagePath),
+            width: 70,
+            height: 70,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: 70,
+                height: 70,
+                color: Colors.grey[300],
+                child: const Icon(Icons.person, size: 35),
+              );
+            },
+          ),
+        ),
+      );
+    } else {
+      return CircleAvatar(
+        radius: 35,
+        backgroundImage: NetworkImage(imagePath),
+        onBackgroundImageError: (exception, stackTrace) {
+          // Handle network image error
+        },
+        child: imagePath.isEmpty 
+            ? const Icon(Icons.person, size: 35)
+            : null,
+      );
+    }
   }
 
   @override
