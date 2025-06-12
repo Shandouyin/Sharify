@@ -81,15 +81,12 @@ class MusicCard extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            ), // Play button
+              ),            ), // Play button
             Consumer<AudioPlayerService>(
               builder: (context, audioService, child) {
                 final isCurrentMusic = audioService.isMusicLoaded(music);
                 final isPlaying = audioService.isPlayingMusic(music);
-                final isLoading = audioService.isLoading &&
-                    (audioService.currentMusic?.id == music.id ||
-                        audioService.currentMusic == null);
+                final isLoading = audioService.isMusicLoading(music);
 
                 return IconButton(
                   icon: Icon(
@@ -180,17 +177,14 @@ class MusicCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ],
-                ),
+                  ],                ),
               ),
             ), // Play button
             Consumer<AudioPlayerService>(
               builder: (context, audioService, child) {
                 final isCurrentMusic = audioService.isMusicLoaded(music);
                 final isPlaying = audioService.isPlayingMusic(music);
-                final isLoading = audioService.isLoading &&
-                    (audioService.currentMusic?.id == music.id ||
-                        audioService.currentMusic == null);
+                final isLoading = audioService.isMusicLoading(music);
 
                 return IconButton(
                   icon: Icon(

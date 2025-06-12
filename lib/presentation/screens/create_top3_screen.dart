@@ -299,17 +299,14 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
             Icons.drag_indicator,
             color: Colors.white.withValues(alpha: 0.7),
             size: 20,
-          ),
-        ),
+          ),        ),
 
         // Play button
         Consumer<AudioPlayerService>(
           builder: (context, audioService, child) {
             final isCurrentMusic = audioService.isMusicLoaded(music);
             final isPlaying = audioService.isPlayingMusic(music);
-            final isLoading = audioService.isLoading &&
-                (audioService.currentMusic?.id == music.id ||
-                    audioService.currentMusic == null);
+            final isLoading = audioService.isMusicLoading(music);
             return IconButton(
               icon: Icon(
                 isLoading

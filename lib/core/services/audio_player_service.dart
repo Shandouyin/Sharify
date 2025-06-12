@@ -11,16 +11,16 @@ class AudioPlayerService extends ChangeNotifier {
   }
 
   final AudioPlayer _audioPlayer = AudioPlayer();
-
   MusicModel? _currentMusic;
+  MusicModel? _loadingMusic; // Musique en cours de chargement
   bool _isPlaying = false;
   bool _isLoading = false;
   bool _isCompleted = false;
   Duration _currentPosition = Duration.zero;
   Duration _totalDuration = Duration.zero;
-  String? _currentPreviewUrl;
-  // Getters
+  String? _currentPreviewUrl;  // Getters
   MusicModel? get currentMusic => _currentMusic;
+  MusicModel? get loadingMusic => _loadingMusic;
   bool get isPlaying => _isPlaying;
   bool get isLoading => _isLoading;
   bool get isCompleted => _isCompleted;
@@ -65,28 +65,30 @@ class AudioPlayerService extends ChangeNotifier {
   bool isPlayingMusic(MusicModel music) {
     return _currentMusic?.id == music.id && _isPlaying;
   }
-
   /// Vérifie si une musique spécifique est chargée (même en pause)
   bool isMusicLoaded(MusicModel music) {
     return _currentMusic?.id == music.id;
   }
 
-  /// Lance la lecture d'une musique
+  /// Vérifie si une musique spécifique est en cours de chargement
+  bool isMusicLoading(MusicModel music) {
+    return _loadingMusic?.id == music.id && _isLoading;
+  }  /// Lance la lecture d'une musique
   Future<void> playMusic(MusicModel music) async {
     try {
       _isLoading = true;
+      _loadingMusic = music; // Marquer cette musique comme en cours de chargement
       notifyListeners();
 
       // Si c'est la même musique, juste reprendre la lecture
       if (_currentMusic?.id == music.id && _currentPreviewUrl != null) {
         await _audioPlayer.play();
         _isLoading = false;
+        _loadingMusic = null;
         notifyListeners();
         return;
-      }
-
-      // Arrêter la musique actuelle si elle existe
-      await stop();
+      }      // Arrêter l'audio sans réinitialiser _currentMusic pour éviter le clignotement de l'UI
+      await _audioPlayer.stop();
 
       // Rechercher la musique sur Deezer
       final deezerTrack = await DeezerService.searchTrackWithFallback(
@@ -112,15 +114,14 @@ class AudioPlayerService extends ChangeNotifier {
         }
       }
     } catch (e) {
-      // En mode debug, on peut utiliser debugPrint, sinon on ignore silencieusement
-      assert(() {
-        debugPrint('Erreur lors de la lecture: $e');
-        return true;
-      }());
+      // En cas d'erreur, réinitialiser complètement
       _currentMusic = null;
       _currentPreviewUrl = null;
+      _currentPosition = Duration.zero;
+      _totalDuration = Duration.zero;
     } finally {
       _isLoading = false;
+      _loadingMusic = null; // Réinitialiser la musique en cours de chargement
       notifyListeners();
     }
   }
@@ -153,11 +154,11 @@ class AudioPlayerService extends ChangeNotifier {
       notifyListeners();
     }
   }
-
   /// Arrête complètement la lecture
   Future<void> stop() async {
     await _audioPlayer.stop();
     _currentMusic = null;
+    _loadingMusic = null;
     _currentPreviewUrl = null;
     _currentPosition = Duration.zero;
     _totalDuration = Duration.zero;
