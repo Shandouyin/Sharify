@@ -351,12 +351,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ],
     );
   }
-
   // Widget pour construire la section "Son préféré"
   Widget _buildFavoriteMusic(BuildContext context, List<MusicModel> topMusic) {
-    // Afficher la première musique du top 3 comme son préféré
-    final MusicModel? favoriteMusic =
-        topMusic.isNotEmpty ? topMusic.first : null;
+    final MockDataService dataService = MockDataService();
+    
+    // Utiliser le système de points pour déterminer le favori
+    final MusicModel? favoriteMusic = dataService.getFavoriteMusicForUser(widget.userId);
+    
+    // Si aucun favori trouvé par le système de points, prendre la première du dernier Top3
+    final MusicModel? fallbackFavorite = favoriteMusic ?? 
+        (topMusic.isNotEmpty ? topMusic.first : null);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,7 +376,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ),
           ),
         ),
-        if (favoriteMusic == null)
+        if (fallbackFavorite == null)
           SizedBox(
             width: double.infinity,
             child: const Column(
@@ -405,7 +409,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: MusicCard(
-              music: favoriteMusic,
+              music: fallbackFavorite,
               rank: 0, // Pas de rang pour le favori
               backgroundColor: Colors.grey.withAlpha(64),
               buttonColor: Colors.grey,

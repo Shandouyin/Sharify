@@ -30,18 +30,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _loadUserData();
   }
-
   void _loadUserData() {
     dataService = MockDataService();
     currentUser = dataService.currentUser;
-    userTopMusic = dataService.getTopMusicForUser(currentUser.id);
 
     // Charger le dernier Top3 pour afficher dans la section "Dernier top 3"
     final lastTop3 = dataService.getLastTop3ForUser(currentUser.id);
     if (lastTop3 != null) {
-      // Remplacer userTopMusic par les musiques du dernier Top3
       userTopMusic =
           lastTop3.musicIds.map((id) => dataService.getMusicById(id)).toList();
+    } else {
+      userTopMusic = [];
     }
   }
 
@@ -365,12 +364,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
-
   // Widget pour construire la section "Son préféré"
   Widget _buildFavoriteMusic(BuildContext context, List<MusicModel> topMusic) {
-    // Afficher la première musique du top 3 comme son préféré
-    final MusicModel? favoriteMusic =
-        topMusic.isNotEmpty ? topMusic.first : null;
+    // Utiliser le système de points pour déterminer le favori
+    final MusicModel? favoriteMusic = dataService.getFavoriteMusicForUser(currentUser.id);
+    
+    // Si aucun favori trouvé par le système de points, prendre la première du dernier Top3
+    final MusicModel? fallbackFavorite = favoriteMusic ?? 
+        (topMusic.isNotEmpty ? topMusic.first : null);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,7 +387,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ),
-        if (favoriteMusic == null)
+        if (fallbackFavorite == null)
           SizedBox(
             width: double.infinity,
             child: const Column(
@@ -419,7 +420,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: MusicCard(
-              music: favoriteMusic,
+              music: fallbackFavorite,
               rank: 0, // Pas de rang pour le favori
               backgroundColor: Colors.grey.withAlpha(64),
               buttonColor: Colors.grey,

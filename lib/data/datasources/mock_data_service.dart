@@ -285,6 +285,53 @@ class MockDataService {
   Map<String, int> getUserArtistsFromTop3s(String userId) =>
       getArtistStatistics(userId: userId);
 
+  // =============== SYSTÈME DE FAVORIS ===============
+
+  /// Calcule la musique favorite d'un utilisateur basée sur un système de points
+  /// 1ère position = 3 points, 2ème position = 2 points, 3ème position = 1 point
+  MusicModel? getFavoriteMusicForUser(String userId) {
+    final userTop3s = getTop3sForUser(userId);
+    
+    if (userTop3s.isEmpty) {
+      return null;
+    }
+
+    Map<String, int> musicPoints = {};
+
+    // Calculer les points pour chaque musique
+    for (var top3 in userTop3s) {
+      for (int i = 0; i < top3.musicIds.length && i < 3; i++) {
+        final musicId = top3.musicIds[i];
+        final points = 3 - i; // 1ère position = 3, 2ème = 2, 3ème = 1
+        musicPoints[musicId] = (musicPoints[musicId] ?? 0) + points;
+      }
+    }
+
+    // Trouver la musique avec le plus de points
+    if (musicPoints.isEmpty) {
+      return null;
+    }
+
+    String favoriteMusicId = musicPoints.entries
+        .reduce((a, b) => a.value > b.value ? a : b)
+        .key;
+
+    try {
+      return getMusicById(favoriteMusicId);
+    } catch (e) {
+      // Si la musique n'existe plus, retourner la première du dernier Top3
+      final lastTop3 = getLastTop3ForUser(userId);
+      if (lastTop3 != null && lastTop3.musicIds.isNotEmpty) {
+        try {
+          return getMusicById(lastTop3.musicIds.first);
+        } catch (e) {
+          return null;
+        }
+      }
+      return null;
+    }
+  }
+
   // =============== GESTION DES TOP3 ===============
 
   // Obtenir les Top3 d'un utilisateur
