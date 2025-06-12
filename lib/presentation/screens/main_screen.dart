@@ -5,9 +5,9 @@ import 'friends_screen.dart';
 import 'statistics_screen.dart';
 import 'profile_screen.dart';
 import 'create_top3_screen.dart';
-import '../../core/widgets/background_container.dart';
-import '../../core/widgets/global_search_modal.dart';
-import '../../core/widgets/mini_player.dart';
+import '../../core/widgets/ui_components/background_container.dart';
+import '../../core/widgets/modals/global_search_modal.dart';
+import '../../core/widgets/players/mini_player.dart';
 import '../../core/services/audio_player_service.dart';
 
 class MainScreen extends StatefulWidget {
@@ -26,7 +26,6 @@ class _MainScreenState extends State<MainScreen> {
       _selectedIndex = index;
     });
   }
-
 
   late final List<Widget> _screens = [
     const HomeScreen(),
@@ -73,7 +72,8 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
         ],
-      ),      body: BackgroundContainer(
+      ),
+      body: BackgroundContainer(
         child: _screens[_selectedIndex],
       ),
       extendBody: true,
@@ -101,7 +101,8 @@ class _MainScreenState extends State<MainScreen> {
                     borderRadius: hasActiveMusic
                         ? BorderRadius.zero
                         : BorderRadius.circular(30),
-                  ),                  child: Row(
+                  ),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _buildNavItem(Icons.home, 'Accueil', 0),
@@ -125,6 +126,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+
   Widget _buildNavItem(IconData icon, String label, int index,
       {double size = 30}) {
     bool isSelected = _selectedIndex == index;

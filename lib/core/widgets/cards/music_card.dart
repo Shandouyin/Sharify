@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../data/models/music_model.dart';
-import '../services/audio_player_service.dart';
-import '../constants/app_constants.dart';
+import '../../../data/models/music_model.dart';
+import '../../services/audio_player_service.dart';
+import '../../constants/app_constants.dart';
 
 class MusicCard extends StatelessWidget {
   final MusicModel music;

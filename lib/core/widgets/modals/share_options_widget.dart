@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../constants/app_constants.dart';
-import 'custom_snack_bar.dart';
+import '../../constants/app_constants.dart';
+import '../ui_components/custom_snack_bar.dart';
 
 /// Widget réutilisable pour les options de partage
 class ShareOptionsWidget extends StatelessWidget {

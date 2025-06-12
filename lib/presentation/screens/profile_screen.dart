@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/user_model.dart';
 import '../../data/models/music_model.dart';
-import '../../core/widgets/music_card.dart';
-import '../../core/widgets/glass_container.dart';
-import '../../core/widgets/vertical_bar_chart.dart';
-import '../../core/widgets/custom_snack_bar.dart';
-import '../../core/widgets/share_options_widget.dart';
+import '../../core/widgets/cards/music_card.dart';
+import '../../core/widgets/ui_components/glass_container.dart';
+import '../../core/widgets/charts/vertical_bar_chart.dart';
+import '../../core/widgets/ui_components/custom_snack_bar.dart';
+import '../../core/widgets/modals/share_options_widget.dart';
 import '../../core/constants/app_constants.dart';
 
 // Définition de la couleur personnalisée pour les boutons
@@ -60,14 +60,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context,
         message: 'Profil mis à jour avec succès',
       );
-    }  }
+    }
+  }
 
   Widget _buildProfileImage(String imagePath) {
     // Check if it's a local file path or a network URL
-    bool isLocalFile = imagePath.startsWith('/') || 
-                      imagePath.contains('\\') || 
-                      imagePath.startsWith('file://') ||
-                      !imagePath.startsWith('http');
+    bool isLocalFile = imagePath.startsWith('/') ||
+        imagePath.contains('\\') ||
+        imagePath.startsWith('file://') ||
+        !imagePath.startsWith('http');
 
     if (isLocalFile && imagePath.isNotEmpty) {
       return Container(
@@ -102,9 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onBackgroundImageError: (exception, stackTrace) {
           // Handle network image error
         },
-        child: imagePath.isEmpty 
-            ? const Icon(Icons.person, size: 35)
-            : null,
+        child: imagePath.isEmpty ? const Icon(Icons.person, size: 35) : null,
       );
     }
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/app_constants.dart';
+import '../../constants/app_constants.dart';
 
 /// Widget réutilisable pour afficher les états vides
 class EmptyStateWidget extends StatelessWidget {

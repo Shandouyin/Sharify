@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/datasources/mock_data_service.dart';
+import '../../../data/datasources/mock_data_service.dart';
 
 /// Widget réutilisable pour le bouton Like avec état
 class LikeButton extends StatefulWidget {

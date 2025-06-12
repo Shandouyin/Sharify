@@ -3,10 +3,10 @@ import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/user_model.dart';
 import '../../data/models/music_model.dart';
 import '../../data/models/top3_model.dart';
-import '../../core/widgets/music_card.dart';
-import '../../core/widgets/glass_container.dart';
-import '../../core/widgets/background_container.dart';
-import '../../core/widgets/empty_state_widget.dart';
+import '../../core/widgets/cards/music_card.dart';
+import '../../core/widgets/ui_components/glass_container.dart';
+import '../../core/widgets/ui_components/background_container.dart';
+import '../../core/widgets/ui_components/empty_state_widget.dart';
 
 class AllTop3Screen extends StatelessWidget {
   final String? userId; // Si null, affiche les Top3 de l'utilisateur actuel

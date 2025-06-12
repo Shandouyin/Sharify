@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../data/models/music_model.dart';
-import 'music_card.dart';
+import '../../../data/models/music_model.dart';
+import '../cards/music_card.dart';
 
 class MusicSelectionModal extends StatefulWidget {
   final List<MusicModel> musicList;
@@ -43,14 +43,17 @@ class _MusicSelectionModalState extends State<MusicSelectionModal> {
       } else {
         filteredMusic = widget.musicList.where((music) {
           return music.title.toLowerCase().contains(query) ||
-                 music.artist.toLowerCase().contains(query);
+              music.artist.toLowerCase().contains(query);
         }).toList();
       }
     });
-  }  @override
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      height: 600, // Hauteur fixe pour éviter le problème de mouvement, identique à GlobalSearchModal
+      height:
+          600, // Hauteur fixe pour éviter le problème de mouvement, identique à GlobalSearchModal
       decoration: const BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -81,7 +84,7 @@ class _MusicSelectionModalState extends State<MusicSelectionModal> {
               textAlign: TextAlign.center,
             ),
           ),
-          
+
           const SizedBox(height: 20),
 
           // Barre de recherche
@@ -131,7 +134,8 @@ class _MusicSelectionModalState extends State<MusicSelectionModal> {
                         padding: const EdgeInsets.only(bottom: 12),
                         child: MusicCard(
                           music: music,
-                          rank: 0, // Pas de rang spécifique dans la liste de sélection
+                          rank:
+                              0, // Pas de rang spécifique dans la liste de sélection
                           backgroundColor: Colors.grey.withAlpha(64),
                           onTap: () {
                             widget.onMusicSelected(music);

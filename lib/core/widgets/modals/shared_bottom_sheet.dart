@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/app_constants.dart';
+import '../../constants/app_constants.dart';
 
 /// Widget réutilisable pour les bottom sheets avec style unifié
 class SharedBottomSheet extends StatelessWidget {

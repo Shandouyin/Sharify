@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../data/models/music_model.dart';
-import '../../data/models/user_model.dart';
-import '../../data/datasources/mock_data_service.dart';
-import 'music_card.dart';
-import 'custom_snack_bar.dart';
+import '../../../data/models/music_model.dart';
+import '../../../data/models/user_model.dart';
+import '../../../data/datasources/mock_data_service.dart';
+import '../cards/music_card.dart';
+import '../ui_components/custom_snack_bar.dart';
 
 class GlobalSearchModal extends StatefulWidget {
   const GlobalSearchModal({super.key});
@@ -26,7 +26,7 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _searchController.addListener(_performSearch);
-    
+
     // Écouter les changements d'onglets pour mettre à jour le placeholder
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
@@ -35,10 +35,10 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
         });
       }
     });
-    
+
     // Initialiser avec toutes les données
     filteredMusic = _dataService.getAllMusic();
-    
+
     // Obtenir les utilisateurs qui ne sont pas des amis de l'utilisateur actuel
     final currentUser = _dataService.currentUser;
     final allUsers = _dataService.getAllUsers();
@@ -47,7 +47,7 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
             user.id != currentUser.id &&
             !currentUser.friendIds.contains(user.id))
         .toList();
-    
+
     // Initialiser le statut de suivi
     for (var user in filteredUsers) {
       followStatus[user.id] = false;
@@ -78,16 +78,16 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
         // Filtrer les musiques
         filteredMusic = _dataService.getAllMusic().where((music) {
           return music.title.toLowerCase().contains(query) ||
-                 music.artist.toLowerCase().contains(query);
+              music.artist.toLowerCase().contains(query);
         }).toList();
-        
+
         // Filtrer les utilisateurs
         final currentUser = _dataService.currentUser;
         final allUsers = _dataService.getAllUsers();
         filteredUsers = allUsers.where((user) {
           return user.id != currentUser.id &&
-                 !currentUser.friendIds.contains(user.id) &&
-                 user.username.toLowerCase().contains(query);
+              !currentUser.friendIds.contains(user.id) &&
+              user.username.toLowerCase().contains(query);
         }).toList();
       }
     });
@@ -96,12 +96,12 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
   void _toggleFollow(String userId) {
     setState(() {
       followStatus[userId] = !(followStatus[userId] ?? false);
-    });    // Afficher une notification
+    }); // Afficher une notification
     final isFollowing = followStatus[userId] ?? false;
     final user = filteredUsers.firstWhere((u) => u.id == userId);
     CustomSnackBar.showInfo(
       context,
-      message: isFollowing 
+      message: isFollowing
           ? 'Vous suivez maintenant ${user.username}'
           : 'Vous ne suivez plus ${user.username}',
     );
@@ -138,14 +138,14 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
             ),
           ),
 
-          const SizedBox(height: 16),          // Barre de recherche
+          const SizedBox(height: 16), // Barre de recherche
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
               controller: _searchController,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: _tabController.index == 0 
+                hintText: _tabController.index == 0
                     ? 'Rechercher par titre ou artiste...'
                     : 'Rechercher par utilisateur...',
                 hintStyle: TextStyle(color: Colors.grey[400]),
@@ -191,13 +191,14 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
             ),
           ),
 
-          const SizedBox(height: 16),          // Contenu des onglets
+          const SizedBox(height: 16), // Contenu des onglets
           Expanded(
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
-              ),              child: TabBarView(
+              ),
+              child: TabBarView(
                 controller: _tabController,
                 children: [
                   // Onglet Musiques
@@ -211,7 +212,9 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
         ],
       ),
     );
-  }  Widget _buildMusicTab() {
+  }
+
+  Widget _buildMusicTab() {
     return filteredMusic.isEmpty
         ? const Center(
             child: Text(
@@ -246,7 +249,9 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
               );
             },
           );
-  }  Widget _buildUsersTab() {
+  }
+
+  Widget _buildUsersTab() {
     return filteredUsers.isEmpty
         ? const Center(
             child: Text(
@@ -263,13 +268,14 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
             itemBuilder: (context, index) {
               final user = filteredUsers[index];
               final isFollowing = followStatus[user.id] ?? false;
-              
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
-                    Navigator.pushNamed(context, '/user-profile', arguments: user.id);
+                    Navigator.pushNamed(context, '/user-profile',
+                        arguments: user.id);
                   },
                   child: Container(
                     padding: const EdgeInsets.all(16),
@@ -297,9 +303,9 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
                             ),
                           ),
                         ),
-                      
+
                         const SizedBox(width: 16),
-                        
+
                         // Infos utilisateur
                         Expanded(
                           child: Text(
@@ -311,21 +317,23 @@ class _GlobalSearchModalState extends State<GlobalSearchModal>
                             ),
                           ),
                         ),
-                        
+
                         // Bouton Suivre
                         SizedBox(
                           width: 90,
                           height: 36,
                           child: ElevatedButton.icon(
-                            icon: Icon(isFollowing ? Icons.check : Icons.person_add, size: 16),
+                            icon: Icon(
+                                isFollowing ? Icons.check : Icons.person_add,
+                                size: 16),
                             label: Text(
                               isFollowing ? 'Suivi(e)' : 'Suivre',
                               style: const TextStyle(fontSize: 12),
                             ),
                             onPressed: () => _toggleFollow(user.id),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: isFollowing 
-                                  ? Colors.grey[700] 
+                              backgroundColor: isFollowing
+                                  ? Colors.grey[700]
                                   : const Color(0xFF0F7ACC),
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(

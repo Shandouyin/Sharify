@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/user_model.dart';
-import '../../core/widgets/glass_container.dart';
-import '../../core/widgets/background_container.dart';
+import '../../core/widgets/ui_components/glass_container.dart';
+import '../../core/widgets/ui_components/background_container.dart';
 import '../../core/constants/app_constants.dart';
 
 const Color customButtonColor = AppConstants.primaryButtonColor;

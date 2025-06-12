@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/widgets/glass_container.dart';
-import '../../core/widgets/music_selection_modal.dart';
-import '../../core/widgets/custom_snack_bar.dart';
+import '../../core/widgets/ui_components/glass_container.dart';
+import '../../core/widgets/modals/music_selection_modal.dart';
+import '../../core/widgets/ui_components/custom_snack_bar.dart';
 import '../../core/services/audio_player_service.dart';
 import '../../core/constants/app_constants.dart';
 import '../../data/datasources/mock_data_service.dart';

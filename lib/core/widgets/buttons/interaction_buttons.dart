@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../data/datasources/mock_data_service.dart';
-import '../../data/models/user_model.dart';
-import '../constants/app_constants.dart';
-import 'comment_sheet.dart';
+import '../../../data/datasources/mock_data_service.dart';
+import '../../../data/models/user_model.dart';
+import '../../constants/app_constants.dart';
+import '../modals/comment_sheet.dart';
 import 'like_button.dart';
 
 /// Widget réutilisable pour les boutons d'interaction (like, share, comment)

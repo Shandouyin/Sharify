@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/user_model.dart';
 import '../../data/models/music_model.dart';
-import '../../core/widgets/music_card.dart';
-import '../../core/widgets/glass_container.dart';
-import '../../core/widgets/interaction_buttons.dart';
-import '../../core/widgets/empty_state_widget.dart';
-import '../../core/widgets/share_options_widget.dart';
+import '../../core/widgets/cards/music_card.dart';
+import '../../core/widgets/ui_components/glass_container.dart';
+import '../../core/widgets/buttons/interaction_buttons.dart';
+import '../../core/widgets/ui_components/empty_state_widget.dart';
+import '../../core/widgets/modals/share_options_widget.dart';
 
 class FriendsScreen extends StatefulWidget {
   const FriendsScreen({super.key});

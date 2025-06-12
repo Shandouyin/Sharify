@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/music_model.dart';
-import '../../core/widgets/music_card.dart';
-import '../../core/widgets/glass_container.dart';
-import '../../core/widgets/vertical_bar_chart.dart';
-import '../../core/widgets/empty_state_widget.dart';
+import '../../core/widgets/cards/music_card.dart';
+import '../../core/widgets/ui_components/glass_container.dart';
+import '../../core/widgets/charts/vertical_bar_chart.dart';
+import '../../core/widgets/ui_components/empty_state_widget.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
