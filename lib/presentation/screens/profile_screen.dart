@@ -7,9 +7,13 @@ import '../../core/widgets/music_card.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/vertical_bar_chart.dart';
 import '../../core/widgets/custom_snack_bar.dart';
+import '../../core/widgets/share_options_widget.dart';
+import '../../core/widgets/profile_avatar.dart';
+import '../../core/widgets/custom_button.dart';
+import '../../core/constants/app_constants.dart';
 
-// Définition de la couleur personnalisée pour les boutons (même que create_top3_screen.dart)
-const Color customButtonColor = Color(0xFF0F7ACC);
+// Définition de la couleur personnalisée pour les boutons
+const Color customButtonColor = AppConstants.primaryButtonColor;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -28,20 +32,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _loadUserData();
   }
+
   void _loadUserData() {
     dataService = MockDataService();
     currentUser = dataService.currentUser;
     userTopMusic = dataService.getTopMusicForUser(currentUser.id);
-    
+
     // Charger le dernier Top3 pour afficher dans la section "Dernier top 3"
     final lastTop3 = dataService.getLastTop3ForUser(currentUser.id);
     if (lastTop3 != null) {
       // Remplacer userTopMusic par les musiques du dernier Top3
-      userTopMusic = lastTop3.musicIds
-          .map((id) => dataService.getMusicById(id))
-          .toList();
+      userTopMusic =
+          lastTop3.musicIds.map((id) => dataService.getMusicById(id)).toList();
     }
-  }  void _refreshUserData() {
+  }
+
+  void _refreshUserData() {
     setState(() {
       _loadUserData();
     });
@@ -58,57 +64,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
   }
-
   Widget _buildProfileImage(String imagePath) {
-    // Check if it's a local file path or a network URL
-    bool isLocalFile = imagePath.startsWith('/') || 
-                      imagePath.contains('\\') || 
-                      imagePath.startsWith('file://') ||
-                      !imagePath.startsWith('http');
+    return ProfileAvatar(
+      imagePath: imagePath,
+      radius: 35,
+    );
+  }
 
-    if (isLocalFile && imagePath.isNotEmpty) {
-      return Container(
-        width: 70,
-        height: 70,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 2),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(35),
-          child: Image.file(
-            File(imagePath),
-            width: 70,
-            height: 70,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                width: 70,
-                height: 70,
-                color: Colors.grey[300],
-                child: const Icon(Icons.person, size: 35),
-              );
-            },
-          ),
-        ),
-      );
-    } else {
-      return CircleAvatar(
-        radius: 35,
-        backgroundImage: NetworkImage(imagePath),
-        onBackgroundImageError: (exception, stackTrace) {
-          // Handle network image error
-        },
-        child: imagePath.isEmpty 
-            ? const Icon(Icons.person, size: 35)
-            : null,
-      );
-    }
-  }  @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 60), // Padding réduit à 60px
+      backgroundColor: Colors.transparent,
+      body: SingleChildScrollView(
+        padding:
+            const EdgeInsets.fromLTRB(16, 16, 16, 60), // Padding réduit à 60px
         child: GlassContainer(
           blur: 10,
           opacity: 0.25,
@@ -120,145 +89,158 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [                    // Image de profil à gauche
+                  children: [
+                    // Image de profil à gauche
                     _buildProfileImage(currentUser.profilePicture),
-                    
+
                     const SizedBox(width: 16),
-                    
+
                     // Informations utilisateur à droite
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                            Text(
-                              currentUser.username,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                          Text(
+                            currentUser.username,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '@${currentUser.username.toLowerCase()}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.white70,
-                              ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '@${currentUser.username.toLowerCase()}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white70,
                             ),
-                          ],
-                        ),                      ),
-                    ],
-                  ),
-                ),
-                    const SizedBox(height: 24),
-                    // Statistiques : Suivi(e)s, Followers et J'aimes
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildStatColumn('${currentUser.friendIds.length}', 'Suivi(e)s'),
-                        _buildStatColumn('127', 'Followers'),
-                        _buildStatColumn('342', 'J\'aimes'),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                    // Boutons Modifier et Partager
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                      // Bouton "Modifier"
-                      Expanded(
-                        child: SizedBox(
-                          height: 40,                          child: ElevatedButton(                            onPressed: () async {
-                              final result = await Navigator.pushNamed(context, '/edit-profile');
-                              _handleEditProfileResult(result);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: customButtonColor,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Statistiques : Suivi(e)s, Followers et J'aimes
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildStatColumn(
+                        '${currentUser.friendIds.length}', 'Suivi(e)s'),
+                    _buildStatColumn('127', 'Followers'),
+                    _buildStatColumn('342', 'J\'aimes'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              // Boutons Modifier et Partager
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    // Bouton "Modifier"
+                    Expanded(
+                      child: SizedBox(
+                        height: 40,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final result = await Navigator.pushNamed(
+                                context, '/edit-profile');
+                            _handleEditProfileResult(result);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: customButtonColor,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Text(
-                              'Modifier',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
+                          ),
+                          child: const Text(
+                            'Modifier',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                       ),
-                      
-                      const SizedBox(width: 16),
-                      
-                      // Bouton "Partager"
-                      Expanded(
-                        child: SizedBox(
-                          height: 40,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _showShareOptions(context, currentUser);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: customButtonColor,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
+                    ),
+
+                    const SizedBox(width: 16),
+
+                    // Bouton "Partager"
+                    Expanded(
+                      child: SizedBox(
+                        height: 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            ShareOptionsWidget.show(
+                              context: context,
+                              shareText:
+                                  "Découvre le profil de ${currentUser.username} sur Sharify!",
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: customButtonColor,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Text(
-                              'Partager',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
+                          ),
+                          child: const Text(
+                            'Partager',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
                             ),
-                          ),                        ),
-                      ),
-                    ],
-                  ),
-                ),                  const SizedBox(height: 30),
-                  
-                  // Section Son préféré
-                  _buildFavoriteMusic(context, userTopMusic),
-                    const SizedBox(height: 30),
-                  
-                  // Section Dernier top 3
-                  _buildMyTopMusic(context, userTopMusic),
-                    const SizedBox(height: 20),
-                  
-                  // Bouton Voir Plus
-                  _buildViewMoreButton(context),                  const SizedBox(height: 30),
-                    
-                  // Titre Statistiques
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: const Text(
-                      "Statistiques",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
-                  ),                  const SizedBox(height: 20),
-                      // Charts section
-                  _buildChartsSection(context, currentUser),
-                  
-                  const SizedBox(height: 50),
-                ],
-            ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+
+              // Section Son préféré
+              _buildFavoriteMusic(context, userTopMusic),
+              const SizedBox(height: 30),
+
+              // Section Dernier top 3
+              _buildMyTopMusic(context, userTopMusic),
+              const SizedBox(height: 20),
+
+              // Bouton Voir Plus
+              _buildViewMoreButton(context), const SizedBox(height: 30),
+
+              // Titre Statistiques
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: const Text(
+                  "Statistiques",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Charts section
+              _buildChartsSection(context, currentUser),
+
+              const SizedBox(height: 50),
+            ],
+          ),
         ),
       ),
     );
   }
-  
+
   // Widget pour construire une colonne de statistiques
   Widget _buildStatColumn(String value, String label) {
     return Column(
@@ -282,118 +264,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
-  
-  // Méthode pour afficher les options de partage
-  void _showShareOptions(BuildContext context, UserModel user) {
-    final String shareText = "Découvre le profil de ${user.username} sur Sharify!";
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.grey[900],
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Titre
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Text(
-                  'Partager le profil',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(color: Colors.white),
-                ),
-              ),
-
-              // Options de partage
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildShareOption(
-                      context, Icons.message, Colors.green, 'Message', () {
-                    Navigator.pop(context);
-                    _simulateShare(context, 'Message', shareText);
-                  }),
-                  _buildShareOption(context, Icons.email, Colors.red, 'Email',
-                      () {
-                    Navigator.pop(context);
-                    _simulateShare(context, 'Email', shareText);
-                  }),
-                  _buildShareOption(
-                      context, Icons.facebook, Colors.blue, 'Facebook', () {
-                    Navigator.pop(context);
-                    _simulateShare(context, 'Facebook', shareText);
-                  }),
-                  _buildShareOption(
-                      context, Icons.link, Colors.orange, 'Copier', () {
-                    Navigator.pop(context);
-                    _simulateShare(context, 'Copier le lien', shareText,
-                        isLink: true);
-                  }),
-                ],
-              ),
-
-              // Plus d'options
-              const SizedBox(height: 20),
-              TextButton.icon(
-                icon: const Icon(Icons.more_horiz, color: Colors.white70),
-                label: const Text(
-                  'Plus d\'options',
-                  style: TextStyle(color: Colors.white70),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                  _simulateShare(context, 'Autres applications', shareText);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  // Construire une option de partage individuelle
-  Widget _buildShareOption(BuildContext context, IconData icon, Color color,
-      String label, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        children: [
-          CircleAvatar(
-            backgroundColor: color.withAlpha(51),
-            radius: 25,
-            child: Icon(icon, color: color, size: 25),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
-  // Simuler un partage
-  void _simulateShare(BuildContext context, String platform, String content,
-      {bool isLink = false}) {    if (isLink) {
-      CustomSnackBar.showInfo(
-        context,
-        message: 'Lien copié dans le presse-papier',
-      );
-    } else {
-      CustomSnackBar.showInfo(
-        context,
-        message: 'Partage via $platform : "$content"',
-      );
-    }
-  }  Widget _buildMyTopMusic(BuildContext context, List<MusicModel> topMusic) {
+  Widget _buildMyTopMusic(BuildContext context, List<MusicModel> topMusic) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -406,7 +278,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-          ),        ),
+          ),
+        ),
         if (topMusic.isEmpty)
           SizedBox(
             width: double.infinity,
@@ -455,11 +328,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
+
   // Widget pour construire la section "Son préféré"
   Widget _buildFavoriteMusic(BuildContext context, List<MusicModel> topMusic) {
     // Afficher la première musique du top 3 comme son préféré
-    final MusicModel? favoriteMusic = topMusic.isNotEmpty ? topMusic.first : null;
-    
+    final MusicModel? favoriteMusic =
+        topMusic.isNotEmpty ? topMusic.first : null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -472,7 +347,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-          ),        ),
+          ),
+        ),
         if (favoriteMusic == null)
           SizedBox(
             width: double.infinity,
@@ -515,6 +391,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
+
   // Widget pour construire le bouton "Voir Plus"
   Widget _buildViewMoreButton(BuildContext context) {
     return Center(
@@ -531,7 +408,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-          ),          child: const Text(
+          ),
+          child: const Text(
             'Voir plus',
             style: TextStyle(
               fontSize: 16,
@@ -542,18 +420,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
   // Widget pour construire la section des graphiques
   Widget _buildChartsSection(BuildContext context, UserModel user) {
     final MockDataService dataService = MockDataService();
-    
+
     // Utiliser les statistiques basées sur les Top3 réels
-    final Map<String, int> userGenres = dataService.getUserGenresFromTop3s(user.id);
-    final Map<String, int> userArtists = dataService.getUserArtistsFromTop3s(user.id);
-    
+    final Map<String, int> userGenres =
+        dataService.getUserGenresFromTop3s(user.id);
+    final Map<String, int> userArtists =
+        dataService.getUserArtistsFromTop3s(user.id);
+
     // Si pas de Top3, fallback sur les données statiques
-    final Map<String, int> fallbackGenres = userGenres.isEmpty ? dataService.getUserGenres(user.id) : userGenres;
-    final Map<String, int> fallbackArtists = userArtists.isEmpty ? dataService.getUserArtists(user.id) : userArtists;    return Column(
-      children: [        // Graphique des genres
+    final Map<String, int> fallbackGenres =
+        userGenres.isEmpty ? dataService.getUserGenres(user.id) : userGenres;
+    final Map<String, int> fallbackArtists =
+        userArtists.isEmpty ? dataService.getUserArtists(user.id) : userArtists;
+    return Column(
+      children: [
+        // Graphique des genres
         _buildChartSection(
           context,
           title: 'Genres les plus écoutés',
@@ -578,8 +463,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ],
     );
-  }  // Widget pour construire une section de graphique
-  Widget _buildChartSection(BuildContext context, {required String title, required Widget chart}) {
+  } // Widget pour construire une section de graphique
+
+  Widget _buildChartSection(BuildContext context,
+      {required String title, required Widget chart}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

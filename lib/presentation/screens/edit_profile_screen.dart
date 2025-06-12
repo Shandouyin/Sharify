@@ -5,8 +5,9 @@ import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/user_model.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/background_container.dart';
+import '../../core/constants/app_constants.dart';
 
-const Color customButtonColor = Color(0xFF0F7ACC);
+const Color customButtonColor = AppConstants.primaryButtonColor;
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -19,7 +20,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final MockDataService dataService = MockDataService();
   final TextEditingController _usernameController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
-  
+
   late UserModel currentUser;
   String? _selectedImagePath;
   bool _isLoading = false;
@@ -45,12 +46,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         maxHeight: 512,
         imageQuality: 80,
       );
-      
+
       if (image != null) {
         setState(() {
           _selectedImagePath = image.path;
         });
-      }    } catch (e) {
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -70,12 +72,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         maxHeight: 512,
         imageQuality: 80,
       );
-      
+
       if (image != null) {
         setState(() {
           _selectedImagePath = image.path;
         });
-      }    } catch (e) {
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -177,7 +180,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     try {
       // Simuler une sauvegarde
-      await Future.delayed(const Duration(seconds: 1));      // Mettre à jour les données (simulé)
+      await Future.delayed(
+          const Duration(seconds: 1)); // Mettre à jour les données (simulé)
       dataService.updateUserProfile(
         currentUser.id,
         _usernameController.text.trim(),
@@ -185,7 +189,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
 
       if (mounted) {
-        Navigator.pop(context, true); // Retourner true pour indiquer que le profil a été modifié
+        Navigator.pop(context,
+            true); // Retourner true pour indiquer que le profil a été modifié
       }
     } catch (e) {
       if (mounted) {
@@ -201,7 +206,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _isLoading = false;
       });
     }
-  }  Widget _buildProfileImage() {
+  }
+
+  Widget _buildProfileImage() {
     return Center(
       child: Stack(
         children: [
@@ -268,7 +275,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           controller: _usernameController,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            hintText: 'Entrez votre nom d\'utilisateur',            hintStyle: const TextStyle(color: Colors.white54),
+            hintText: 'Entrez votre nom d\'utilisateur',
+            hintStyle: const TextStyle(color: Colors.white54),
             filled: true,
             fillColor: Colors.white.withValues(alpha: 0.1),
             border: OutlineInputBorder(
@@ -286,9 +294,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ],
     );
   }
+
   Widget _buildActionButtons() {
     return Row(
-      children: [        Expanded(
+      children: [
+        Expanded(
           child: ElevatedButton(
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
@@ -340,11 +350,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ],
     );
-  }  @override
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BackgroundContainer(
       child: Scaffold(
-        backgroundColor: Colors.transparent,        appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
           title: const Text(
             'Modifier le profil',
             style: TextStyle(color: Colors.white),
@@ -352,7 +365,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           backgroundColor: Colors.black,
           foregroundColor: Colors.white,
           elevation: 0,
-          scrolledUnderElevation: 0, // Désactive l'effet d'élévation lors du défilement
+          scrolledUnderElevation:
+              0, // Désactive l'effet d'élévation lors du défilement
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),

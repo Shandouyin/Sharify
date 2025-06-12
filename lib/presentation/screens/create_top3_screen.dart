@@ -4,11 +4,12 @@ import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/music_selection_modal.dart';
 import '../../core/widgets/custom_snack_bar.dart';
 import '../../core/services/audio_player_service.dart';
+import '../../core/constants/app_constants.dart';
 import '../../data/datasources/mock_data_service.dart';
 import '../../data/models/music_model.dart';
 
-// Définition de la couleur personnalisée pour les boutons (même que home_screen.dart)
-const Color customButtonColor = Color(0xFF0F7ACC);
+// Définition de la couleur personnalisée pour les boutons
+const Color customButtonColor = AppConstants.primaryButtonColor;
 
 class CreateTop3Screen extends StatefulWidget {
   final Function(int)? onNavigateToHome;
@@ -22,16 +23,8 @@ class CreateTop3Screen extends StatefulWidget {
 class _CreateTop3ScreenState extends State<CreateTop3Screen> {
   final MockDataService dataService = MockDataService();
   late List<MusicModel> allMusic;
-
   // Liste pour stocker les 3 musiques sélectionnées
-  List<MusicModel?> selectedMusic = [
-    null,
-    null,
-    null
-  ]; // Couleurs pour les slots selon le rang (exactement les mêmes que dans MusicCard)
-  static const Color goldColor = Color(0xFFF0C300);
-  static const Color silverColor = Color(0xFFF0F0F0);
-  static const Color bronzeColor = Color(0xFFAD390E);
+  List<MusicModel?> selectedMusic = [null, null, null];
   @override
   void initState() {
     super.initState();
@@ -380,30 +373,14 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
   }
 
   Color _getRankColor(int index) {
-    switch (index) {
-      case 0:
-        return goldColor; // Couleur directe pour GlassContainer
-      case 1:
-        return silverColor;
-      case 2:
-        return bronzeColor;
-      default:
-        return Colors.grey;
-    }
+    return AppConstants.getRankBorderColor(index + 1);
   }
 
   Color _getButtonColorForRank(int rank) {
-    switch (rank) {
-      case 1:
-        return const Color(0xFFFF9900); // Gold button
-      case 2:
-        return const Color(0xFFC1D4ED); // Silver button
-      case 3:
-        return const Color(0xFFB74210); // Bronze button
-      default:
-        return Colors.grey;
-    }
-  }  @override
+    return AppConstants.getRankButtonColor(rank);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -411,8 +388,10 @@ class _CreateTop3ScreenState extends State<CreateTop3Screen> {
         padding: const EdgeInsets.all(16),
         child: GlassContainer(
           blur: 10,
-          opacity: 0.25,            child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 60), // Padding réduit à 60px
+          opacity: 0.25,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+                20, 20, 20, 60), // Padding réduit à 60px
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

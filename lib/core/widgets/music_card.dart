@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/music_model.dart';
 import '../services/audio_player_service.dart';
+import '../constants/app_constants.dart';
 
 class MusicCard extends StatelessWidget {
   final MusicModel music;
@@ -17,36 +18,15 @@ class MusicCard extends StatelessWidget {
     this.onTap,
     this.backgroundColor,
     this.buttonColor,
-  });
-  // Get colors based on rank
+  }); // Get colors based on rank
   Color getBackgroundColor() {
     if (backgroundColor != null) return backgroundColor!;
-    switch (rank) {
-      case 1:
-        return const Color(0xFFF0C300)
-            .withAlpha(64); // Gold for 1st (0.25 * 255 = 64)
-      case 2:
-        return const Color(0xFFF0F0F0).withAlpha(64); // Silver for 2nd
-      case 3:
-        return const Color(0xFFAD390E).withAlpha(64); // Bronze for 3rd
-      default:
-        return Colors.grey.withAlpha(64);
-    }
+    return AppConstants.getRankBackgroundColor(rank);
   }
 
   Color getButtonColor() {
     if (buttonColor != null) return buttonColor!;
-
-    switch (rank) {
-      case 1:
-        return const Color(0xFFFF9900); // Gold button
-      case 2:
-        return const Color(0xFFC1D4ED); // Silver button
-      case 3:
-        return const Color(0xFFB74210); // Bronze button
-      default:
-        return Colors.grey;
-    }
+    return AppConstants.getRankButtonColor(rank);
   }
 
   @override
