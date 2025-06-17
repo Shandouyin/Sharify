@@ -150,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: isSelected ? selectedColor : Colors.white,
-                  fontSize: 11,
+                  fontSize: 10,
                   fontWeight: FontWeight.w500,
                 ),
               ),

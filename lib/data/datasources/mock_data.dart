@@ -3,7 +3,8 @@ import '../models/user_model.dart';
 
 /// Classe contenant uniquement les données mockées pour l'application Sharify
 class MockData {
-  static final List<MusicModel> musicList = [    MusicModel(
+  static final List<MusicModel> musicList = [
+    MusicModel(
       id: 'm1',
       title: 'Billie Jean',
       artist: 'Michael Jackson',
@@ -11,7 +12,8 @@ class MockData {
           'https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png',
       previewUrl: 'https://example.com/preview1',
       genre: 'Pop',
-    ),MusicModel(
+    ),
+    MusicModel(
       id: 'm2',
       title: 'Shape of You',
       artist: 'Ed Sheeran',
@@ -19,7 +21,8 @@ class MockData {
           'https://upload.wikimedia.org/wikipedia/en/b/b4/Shape_Of_You_%28Official_Single_Cover%29_by_Ed_Sheeran.png',
       previewUrl: 'https://example.com/preview2',
       genre: 'Pop',
-    ),    MusicModel(
+    ),
+    MusicModel(
       id: 'm3',
       title: 'Bohemian Rhapsody',
       artist: 'Queen',
@@ -27,7 +30,8 @@ class MockData {
           'https://upload.wikimedia.org/wikipedia/en/9/9f/Bohemian_Rhapsody.png',
       previewUrl: 'https://example.com/preview3',
       genre: 'Rock',
-    ),    MusicModel(
+    ),
+    MusicModel(
       id: 'm4',
       title: 'Happy',
       artist: 'Pharrell Williams',
@@ -53,7 +57,8 @@ class MockData {
           'https://i.scdn.co/image/ab67616d0000b2730c471c36970b9406233842a5',
       previewUrl: 'https://example.com/preview6',
       genre: 'R&B',
-    ),    MusicModel(
+    ),
+    MusicModel(
       id: 'm7',
       title: 'Blinding Lights',
       artist: 'The Weeknd',
@@ -61,7 +66,8 @@ class MockData {
           'https://upload.wikimedia.org/wikipedia/en/e/e6/The_Weeknd_-_Blinding_Lights.png',
       previewUrl: 'https://example.com/preview7',
       genre: 'Pop',
-    ),MusicModel(
+    ),
+    MusicModel(
       id: 'm8',
       title: 'Despacito',
       artist: 'Luis Fonsi ft. Daddy Yankee',
@@ -69,7 +75,8 @@ class MockData {
           'https://upload.wikimedia.org/wikipedia/en/c/c8/Luis_Fonsi_Feat._Daddy_Yankee_-_Despacito_%28Official_Single_Cover%29.png',
       previewUrl: 'https://example.com/preview8',
       genre: 'Latin',
-    ),MusicModel(
+    ),
+    MusicModel(
       id: 'm9',
       title: 'Imagine',
       artist: 'John Lennon',
@@ -77,7 +84,8 @@ class MockData {
           'https://upload.wikimedia.org/wikipedia/en/6/69/ImagineCover.jpg',
       previewUrl: 'https://example.com/preview9',
       genre: 'Rock',
-    ),MusicModel(
+    ),
+    MusicModel(
       id: 'm10',
       title: 'Hotel California',
       artist: 'Eagles',
@@ -94,7 +102,8 @@ class MockData {
           'https://i.scdn.co/image/ab67616d0000b273072e9faef2ef7b6db63834a3',
       previewUrl: 'https://example.com/preview11',
       genre: 'Hip-Hop',
-    ),    MusicModel(
+    ),
+    MusicModel(
       id: 'm12',
       title: 'Thriller',
       artist: 'Michael Jackson',
@@ -120,7 +129,8 @@ class MockData {
           'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36',
       previewUrl: 'https://example.com/preview14',
       genre: 'Pop',
-    ),    MusicModel(
+    ),
+    MusicModel(
       id: 'm15',
       title: 'Stairway to Heaven',
       artist: 'Led Zeppelin',
@@ -146,7 +156,8 @@ class MockData {
           'https://i.scdn.co/image/ab67616d0000b2734ae1c4c5c45aabe565499163',
       previewUrl: 'https://example.com/preview17',
       genre: 'Indie',
-    ),    MusicModel(
+    ),
+    MusicModel(
       id: 'm18',
       title: 'Flowers',
       artist: 'Miley Cyrus',
@@ -239,7 +250,8 @@ class MockData {
       profilePicture: 'https://randomuser.me/api/portraits/men/28.jpg',
       topMusicIds: ['m12', 'm19', 'm7'],
       friendIds: ['u6', 'u8', 'u10'],
-    ),    UserModel(
+    ),
+    UserModel(
       id: 'u10',
       username: 'indieLover',
       profilePicture: 'https://randomuser.me/api/portraits/women/56.jpg',
@@ -250,7 +262,11 @@ class MockData {
       id: 'u11',
       username: 'musicExplorer',
       profilePicture: 'https://randomuser.me/api/portraits/men/67.jpg',
-      topMusicIds: ['m2', 'm4', 'm8'], // Ed Sheeran, Pharrell Williams, Luis Fonsi
+      topMusicIds: [
+        'm2',
+        'm4',
+        'm8'
+      ], // Ed Sheeran, Pharrell Williams, Luis Fonsi
       friendIds: ['u1', 'u5', 'u7'],
     ),
   ];
