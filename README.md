@@ -1,16 +1,25 @@
-# Sharify
+# Sharify 🎵
 
-A new Flutter project.
+A Flutter app to share and discover your friends' favorite music. Build your top 3, explore what your friends are listening to, and preview tracks directly in the app.
+
+## Features
+
+- Create and share your top 3 favorite tracks
+- Browse your friends' picks and music feed
+- Search songs via the Deezer API
+- Audio playback with a persistent mini player
+- Like, comment and share tracks
+- User profiles with listening statistics
+
+## Tech Stack
+
+Flutter · Dart · Provider · Just Audio · Deezer API · Image Picker
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+> Requires Flutter SDK >=3.0.0
